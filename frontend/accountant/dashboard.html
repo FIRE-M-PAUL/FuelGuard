@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accountant Dashboard — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Finance &amp; Compliance</div>
+                </div>
+            </div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Financial Control Center</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }} · Today: {{ finance.today }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <section class="metrics">
+                <article class="metric">
+                    <div class="k">Revenue Today</div>
+                    <div class="v">K{{ '%.2f'|format(finance.revenue_today) }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Expenses Today</div>
+                    <div class="v">K{{ '%.2f'|format(finance.expenses_today) }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Net Profit Today</div>
+                    <div class="v" style="color: {% if finance.profit_today < 0 %}var(--danger){% else %}var(--success){% endif %}">
+                        K{{ '%.2f'|format(finance.profit_today) }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Sales Today</div>
+                    <div class="v">{{ finance.sales_count_today }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Fuel Purchased Today (L)</div>
+                    <div class="v">{{ '%.2f'|format(finance.purchases_litres_today) }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Month Net Profit</div>
+                    <div class="v">K{{ '%.2f'|format(finance.profit_month) }}</div>
+                </article>
+            </section>
+
+            <section class="dash-grid" style="grid-template-columns: 1fr 1fr;">
+                <article class="panel">
+                    <h2>Revenue — last 7 days</h2>
+                    <div class="chart-bars">
+                        {% for p in finance.rev_series %}
+                        {% set pct = ((p.total / finance.chart_max * 100) if finance.chart_max > 0 else 0) %}
+                        {% set bar_h = pct if pct > 4 else (4 if p.total > 0 else 0) %}
+                        <div class="chart-col">
+                            <div class="chart-bar rev" style="height: {{ bar_h }}%;"></div>
+                            <span class="chart-label">{{ p.day[5:] }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+                <article class="panel">
+                    <h2>Expenses — last 7 days</h2>
+                    <div class="chart-bars">
+                        {% for p in finance.exp_series %}
+                        {% set pct = ((p.total / finance.chart_max * 100) if finance.chart_max > 0 else 0) %}
+                        {% set bar_h = pct if pct > 4 else (4 if p.total > 0 else 0) %}
+                        <div class="chart-col">
+                            <div class="chart-bar exp" style="height: {{ bar_h }}%;"></div>
+                            <span class="chart-label">{{ p.day[5:] }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+            </section>
+
+            <section class="dash-grid" style="margin-top:14px;">
+                <article class="panel">
+                    <h2>Payment summary (today)</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Transactions</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in finance.payment_summary %}
+                                <tr>
+                                    <td>{{ row['payment_method'] }}</td>
+                                    <td>{{ row['cnt'] }}</td>
+                                    <td>K{{ '%.2f'|format(row['total']) }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="muted">No retail sales recorded today.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="panel">
+                    <h2>Recent activity</h2>
+                    <div class="timeline">
+                        {% for a in finance.recent_activity %}
+                        <div class="timeline-item">
+                            <span class="status-pill" style="font-size:10px;">{{ a.kind }}</span>
+                            {{ a.label }} — K{{ '%.2f'|format(a.amount) }} · {{ a.at }}
+                        </div>
+                        {% else %}
+                        <p class="muted">No recent transactions.</p>
+                        {% endfor %}
+                    </div>
+                </article>
+            </section>
+
+            <p class="muted" style="margin-top:16px;">Profit = retail fuel sales revenue − recorded expenses (period).</p>
+        </main>
+    </div>
+</body>
+
+</html>

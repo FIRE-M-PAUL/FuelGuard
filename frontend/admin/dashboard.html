@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Admin Control</div>
+                </div>
+            </div>
+            <nav class="side-links">
+                <a class="active" href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
+                <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+            </nav>
+            <div class="side-meta">Signed in as {{ username }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Access Governance Center</h1>
+                    <div class="meta">{{ username }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+            <section class="metrics">
+                <article class="metric">
+                    <div class="k">Total Users</div>
+                    <div class="v">{{ users|length }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Active Accounts</div>
+                    <div class="v">{{ users|selectattr('status','equalto','active')|list|length }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Inactive Accounts</div>
+                    <div class="v">{{ users|selectattr('status','equalto','inactive')|list|length }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Pending approval</div>
+                    <div class="v">{{ users|selectattr('status','equalto','pending')|list|length }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Admin Roles</div>
+                    <div class="v">{{ users|selectattr('role','equalto','admin')|list|length }}</div>
+                </article>
+            </section>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-list">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <div class="panel">
+            <h2>User Directory & Security Actions</h2>
+            <p class="muted">Staff who self-register appear as <strong>pending</strong> until you use
+                <strong>Approve account</strong> (or toggle status). Pending users cannot sign in.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u['id'] }}</td>
+                            <td>{{ u['username'] }}</td>
+                            <td>{{ u['email'] }}</td>
+                            <td>{{ u['role'] }}</td>
+                            <td>{{ u['department'] or '—' }}</td>
+                            <td><span class="status-pill status-pill--{{ u['status']|lower }}">{{ u['status'] }}</span></td>
+                            <td>
+                                {% if u['id'] != current_user_id %}
+                                <form class="inline-form" method="post"
+                                    action="{{ url_for('admin.toggle_user_status', user_id=u['id']) }}"
+                                    style="margin-bottom:6px;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-secondary btn-small" type="submit">
+                                        {% if (u['status'] or '')|lower == 'pending' %}Approve account{% else %}Toggle
+                                        status{% endif %}
+                                    </button>
+                                </form>
+                                <form class="inline-form" method="post"
+                                    action="{{ url_for('admin.delete_user', user_id=u['id']) }}"
+                                    onsubmit="return confirm('Delete this user permanently?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-danger btn-small" type="submit">Delete</button>
+                                </form>
+                                <form class="inline-form" method="post"
+                                    action="{{ url_for('admin.reset_password', user_id=u['id']) }}"
+                                    style="margin-top:6px;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <div class="password-field" style="max-width:180px;">
+                                        <input type="password" name="new_password" placeholder="New password" required
+                                            minlength="8" data-password-toggle="true" style="margin-bottom:4px;">
+                                    </div>
+                                    <button class="btn btn-secondary btn-small" type="submit">Reset password</button>
+                                </form>
+                                {% else %}
+                                <span class="muted">Current session</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+</body>
+
+</html>

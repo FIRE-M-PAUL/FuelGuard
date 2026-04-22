@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager reports — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Operations Control</div>
+                </div>
+            </div>
+            {% include 'shared/manager_nav.html' %}
+            <div class="side-meta">Department: {{ user['department'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Operational reports</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            <p class="muted" style="margin-top:0;">Downloads are CSV (UTF-8), suitable for Excel or PDF export from your
+                spreadsheet tool.</p>
+
+            <section class="dash-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+                <article class="panel">
+                    <h2>Daily sales report</h2>
+                    <p class="muted">Retail counter sales for one day.</p>
+                    <form method="get" action="{{ url_for('staff.manager_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="daily_sales">
+                        <label class="muted" for="mgr-day" style="font-size:12px;">Date</label>
+                        <input id="mgr-day" name="date" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Fuel usage report</h2>
+                    <p class="muted">Operational fuel records (fleet / internal) by date range.</p>
+                    <form method="get" action="{{ url_for('staff.manager_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="fuel_usage">
+                        <label class="muted" for="usage-from" style="font-size:12px;">From</label>
+                        <input id="usage-from" name="from" type="date" value="{{ today }}" required>
+                        <label class="muted" for="usage-to" style="font-size:12px;">To</label>
+                        <input id="usage-to" name="to" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Stock report</h2>
+                    <p class="muted">Current tank levels and Normal / Low / Critical status.</p>
+                    <form method="get" action="{{ url_for('staff.manager_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="stock">
+                        <button class="btn btn-primary" type="submit">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Operational summary</h2>
+                    <p class="muted">Snapshot: today’s retail activity, pending approvals, alerts.</p>
+                    <form method="get" action="{{ url_for('staff.manager_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="operational">
+                        <button class="btn btn-primary" type="submit">Download CSV</button>
+                    </form>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

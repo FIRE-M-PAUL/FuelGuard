@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Finance &amp; Compliance</div>
+                </div>
+            </div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Expenses</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <a class="btn btn-primary" href="{{ url_for('staff.accountant_expenses_add') }}">Add expense</a>
+                    <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-secondary" type="submit">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <article class="panel">
+                <h2>Recorded expenses</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Recorded by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in expenses %}
+                            <tr>
+                                <td>#{{ e['id'] }}</td>
+                                <td>{{ e['description'] }}</td>
+                                <td>{{ e['category'] }}</td>
+                                <td>K{{ '%.2f'|format(e['amount']) }}</td>
+                                <td>{{ e['date'] }}</td>
+                                <td>{{ e['recorded_by_username'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="muted">No expenses yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+
+</html>

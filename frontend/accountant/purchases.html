@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel purchases — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Finance &amp; Compliance</div>
+                </div>
+            </div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Fuel purchases</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <a class="btn btn-primary" href="{{ url_for('staff.accountant_purchases_add') }}">Record purchase</a>
+                    <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-secondary" type="submit">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <article class="panel">
+                <h2>Purchase history</h2>
+                <p class="muted">New purchases increase on-site fuel stock automatically.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Supplier</th>
+                                <th>Fuel</th>
+                                <th>Qty (L)</th>
+                                <th>Price/L</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Recorded by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in purchases %}
+                            <tr>
+                                <td>#{{ p['id'] }}</td>
+                                <td>{{ p['supplier_name'] }}</td>
+                                <td>{{ p['fuel_type'] }}</td>
+                                <td>{{ '%.2f'|format(p['quantity']) }}</td>
+                                <td>K{{ '%.2f'|format(p['price_per_litre']) }}</td>
+                                <td>K{{ '%.2f'|format(p['total_cost']) }}</td>
+                                <td>{{ p['purchase_date'] }}</td>
+                                <td>{{ p['recorded_by_username'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="muted">No purchases recorded.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+
+</html>

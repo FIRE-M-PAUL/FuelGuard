@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuelGuard - Form Patterns</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1>Fuel Entry Form Blueprint</h1>
+            <p class="subtitle">Modern, validation-friendly form language for secure data input workflows.</p>
+            <form>
+                <div class="field"><label>Vehicle ID</label><input type="text" placeholder="e.g., TRK-102"></div>
+                <div class="field"><label>Driver Name</label><input type="text" placeholder="Full name"></div>
+                <div class="field"><label>Fuel Amount (L)</label><input type="text" placeholder="0.00"></div>
+                <div class="field"><label>Role Scope</label><select><option>Sales</option><option>Manager</option></select></div>
+                <button class="btn btn-primary" type="button">Submit Record</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Operations Control</div>
+                </div>
+            </div>
+            {% include 'shared/manager_nav.html' %}
+            <div class="side-meta">Department: {{ user['department'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Operational command</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }} · {{ ops.today }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% if ops.low_fuel_alert %}
+            <article class="panel"
+                style="border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.08); margin-bottom: 14px;">
+                <h2 style="margin-top:0;">Low fuel level detected</h2>
+                <p class="muted" style="margin-bottom:8px;">One or more fuels are at or below minimum stock. Review the
+                    <a href="{{ url_for('staff.manager_stock') }}">fuel stock</a> page.</p>
+                <ul style="margin:0; padding-left:1.2rem;">
+                    {% for s in ops.low_fuel_rows %}
+                    <li><strong>{{ s.fuel_type }}</strong>: {{ '%.2f'|format(s.available_litres) }} L available (min
+                        {{ '%.0f'|format(s.minimum_level) }} L) — <strong>{{ s.status }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </article>
+            {% endif %}
+
+            <section class="metrics">
+                <article class="metric">
+                    <div class="k">Fuel sold today (L)</div>
+                    <div class="v">{{ '%.2f'|format(ops.litres_sold_today) }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Sales transactions today</div>
+                    <div class="v">{{ ops.sales_transactions_today }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Pending approvals</div>
+                    <div class="v">{{ ops.pending_approvals }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Low fuel alerts</div>
+                    <div class="v">{{ ops.low_fuel_rows|length }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Fuel records (pending)</div>
+                    <div class="v">{{ ops.metrics.pending_requests }}</div>
+                </article>
+                <article class="metric">
+                    <div class="k">Fuel records (total)</div>
+                    <div class="v">{{ ops.metrics.total_records }}</div>
+                </article>
+            </section>
+
+            <section class="dash-grid" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+                <article class="panel">
+                    <h2>Current stock</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fuel</th>
+                                    <th>Available (L)</th>
+                                    <th>Minimum (L)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in ops.stock_rows %}
+                                <tr>
+                                    <td>{{ s.fuel_type }}</td>
+                                    <td>{{ '%.2f'|format(s.available_litres) }}</td>
+                                    <td>{{ '%.0f'|format(s.minimum_level) }}</td>
+                                    <td>
+                                        {% if s.status == 'Normal' %}
+                                        <span class="status-pill"
+                                            style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.35);">{{
+                                            s.status }}</span>
+                                        {% elif s.status == 'Low' %}
+                                        <span class="status-pill"
+                                            style="background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.35);">{{
+                                            s.status }}</span>
+                                        {% else %}
+                                        <span class="status-pill"
+                                            style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);">{{
+                                            s.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="panel">
+                    <h2>Approval queue</h2>
+                    <p class="muted" style="margin-top:0;">Supervise fuel allocation and operational submissions.</p>
+                    <p style="font-size:1.15rem; margin:8px 0 12px;"><strong>{{ ops.pending_approvals }}</strong> <span
+                            class="muted">pending</span></p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Summary</th>
+                                    <th>By</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in ops.pending_preview %}
+                                <tr>
+                                    <td>#{{ r['id'] }}</td>
+                                    <td>{{ r['request_type'] }}</td>
+                                    <td>{{ r['description'].split('|', 1)[-1][:48] }}{% if r['description']|length > 48 %}…{% endif %}</td>
+                                    <td>{{ r['requested_by_username'] }}</td>
+                                    <td>{{ r['request_date'] }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="muted">No pending requests.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <a class="btn btn-primary" style="margin-top:10px;display:inline-block;"
+                        href="{{ url_for('staff.manager_approvals') }}">Open full queue</a>
+                </article>
+            </section>
+
+            <article class="panel" style="margin-top:14px;">
+                <h2>Recent retail sales</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fuel</th>
+                                <th>Qty (L)</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Date</th>
+                                <th>Salesperson</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in ops.recent_sales %}
+                            <tr>
+                                <td>#{{ s['id'] }}</td>
+                                <td>{{ s['fuel_type'] }}</td>
+                                <td>{{ '%.2f'|format(s['quantity']) }}</td>
+                                <td>K{{ '%.2f'|format(s['total_amount']) }}</td>
+                                <td>{{ s['payment_method'] }}</td>
+                                <td>{{ s['sale_date'] }}</td>
+                                <td>{{ s['salesperson_username'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="muted">No retail sales yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+
+</html>

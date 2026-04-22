@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Records — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Finance &amp; Compliance</div>
+                </div>
+            </div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Payment records</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <article class="panel">
+                <h2>Search &amp; filter</h2>
+                <form method="get" action="{{ url_for('staff.accountant_payments') }}" class="inline-form"
+                    style="margin-bottom: 8px;">
+                    <input type="search" name="q" value="{{ filters.q }}" placeholder="ID, customer, plate, salesperson"
+                        style="min-width:220px;" class="field-like">
+                    <select name="fuel_type">
+                        <option value="">All fuel types</option>
+                        <option value="Petrol" {% if filters.fuel_type == 'Petrol' %}selected{% endif %}>Petrol</option>
+                        <option value="Diesel" {% if filters.fuel_type == 'Diesel' %}selected{% endif %}>Diesel</option>
+                    </select>
+                    <select name="payment_method">
+                        <option value="">All payments</option>
+                        <option value="Cash" {% if filters.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+                        <option value="Mobile Money" {% if filters.payment_method == 'Mobile Money' %}selected{% endif %}>Mobile Money</option>
+                        <option value="Card" {% if filters.payment_method == 'Card' %}selected{% endif %}>Card</option>
+                    </select>
+                    <select name="verified">
+                        <option value="" {% if not filters.verified %}selected{% endif %}>All verification</option>
+                        <option value="0" {% if filters.verified == '0' %}selected{% endif %}>Unverified</option>
+                        <option value="1" {% if filters.verified == '1' %}selected{% endif %}>Verified</option>
+                    </select>
+                    <select name="sort">
+                        <option value="date_desc" {% if filters.sort == 'date_desc' %}selected{% endif %}>Newest first</option>
+                        <option value="date_asc" {% if filters.sort == 'date_asc' %}selected{% endif %}>Oldest first</option>
+                        <option value="amount_desc" {% if filters.sort == 'amount_desc' %}selected{% endif %}>Amount high → low</option>
+                        <option value="amount_asc" {% if filters.sort == 'amount_asc' %}selected{% endif %}>Amount low → high</option>
+                        <option value="id_desc" {% if filters.sort == 'id_desc' %}selected{% endif %}>Transaction ID</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">Apply</button>
+                </form>
+            </article>
+
+            <article class="panel">
+                <h2>Transactions</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fuel</th>
+                                <th>Qty (L)</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Date</th>
+                                <th>Salesperson</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in sales %}
+                            <tr>
+                                <td>#{{ s['id'] }}</td>
+                                <td>{{ s['fuel_type'] }}</td>
+                                <td>{{ '%.2f'|format(s['quantity']) }}</td>
+                                <td>K{{ '%.2f'|format(s['total_amount']) }}</td>
+                                <td>{{ s['payment_method'] }}</td>
+                                <td>{{ s['sale_date'] }}</td>
+                                <td>{{ s['salesperson_username'] }}</td>
+                                <td>
+                                    {% if s['payment_verified'] %}
+                                    <span class="status-pill" style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.35);">Verified</span>
+                                    {% else %}
+                                    <span class="status-pill" style="background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.35);">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if not s['payment_verified'] %}
+                                    <form method="post"
+                                        action="{{ url_for('staff.accountant_verify_payment', sale_id=s['id']) }}"
+                                        style="display:inline;margin:0;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-secondary" type="submit" style="padding:6px 12px;font-size:12px;">Verify</button>
+                                    </form>
+                                    {% else %}
+                                    <span class="muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="9" class="muted">No transactions match your filters.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+
+</html>

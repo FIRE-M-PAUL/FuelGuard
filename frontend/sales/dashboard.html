@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div><div class="side-meta">Sales Operations</div></div>
+            </div>
+            <nav class="side-links">
+                <a class="active" href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
+                <a href="{{ url_for('staff.sales_history') }}">Sales History</a>
+                <a href="{{ url_for('staff.sales_dashboard') }}#records">Recent Records</a>
+            </nav>
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Sales Command View</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            {% if last_sale %}
+            <article class="panel" style="margin-bottom:14px;">
+                <h2>Latest sale</h2>
+                <p class="muted">{{ last_sale['fuel_type'] }} · {{ '%.2f'|format(last_sale['quantity']) }} L ·
+                    K{{ '%.2f'|format(last_sale['total_amount']) }} · {{ last_sale['sale_date'] }}</p>
+                <a class="btn btn-secondary" href="{{ url_for('staff.sale_receipt', sale_id=last_sale['id']) }}">View
+                    receipt</a>
+            </article>
+            {% endif %}
+
+            <section class="metrics">
+                <article class="metric"><div class="k">Total Records</div><div class="v">{{ metrics['total_records'] }}</div></article>
+                <article class="metric"><div class="k">Pending</div><div class="v">{{ metrics['pending_requests'] }}</div></article>
+                <article class="metric"><div class="k">Approved</div><div class="v">{{ metrics['approved_requests'] }}</div></article>
+                <article class="metric"><div class="k">Total Cost</div><div class="v">K{{ '%.2f'|format(metrics['total_cost']) }}</div></article>
+            </section>
+            <section class="dash-grid">
+                <article class="panel" id="records">
+                    <h2>Recent Submitted Fuel Entries</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Date</th><th>Vehicle</th><th>Fuel</th><th>Cost</th><th>Status</th></tr></thead>
+                            <tbody>
+                                {% for r in records %}
+                                <tr>
+                                    <td>{{ r['record_date'] }}</td>
+                                    <td>{{ r['vehicle_id'] }}</td>
+                                    <td>{{ r['fuel_amount'] }} L</td>
+                                    <td>K{{ '%.2f'|format(r['cost']) }}</td>
+                                    <td><span class="status-pill">{{ r['status'] }}</span></td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="5" class="muted">No records available.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="panel" id="sales">
+                    <h2>Recent retail sales</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Fuel</th>
+                                    <th>Qty (L)</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in recent_sales %}
+                                <tr>
+                                    <td>{{ s['sale_date'] }}</td>
+                                    <td>{{ s['fuel_type'] }}</td>
+                                    <td>{{ '%.2f'|format(s['quantity']) }}</td>
+                                    <td>K{{ '%.2f'|format(s['total_amount']) }}</td>
+                                    <td><a href="{{ url_for('staff.sale_receipt', sale_id=s['id']) }}">Receipt</a></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="muted">No retail sales yet. Use <strong>Sell Fuel</strong>.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="panel">
+                    <h2>Activity Timeline</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">Record retail sales from <strong>Sell Fuel</strong>.</div>
+                        <div class="timeline-item">Pending fuel records are prioritized for manager review.</div>
+                        <div class="timeline-item">Approved records are retained for accounting and reporting.</div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

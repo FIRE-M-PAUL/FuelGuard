@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial reports — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Finance &amp; Compliance</div>
+                </div>
+            </div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">{{ user['email'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Financial reports</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            <p class="muted" style="margin-top:0;">Exports use CSV (UTF-8). Open in Excel, Google Sheets, or any analytics
+                tool. For print-ready PDF, open the CSV and export from your spreadsheet app.</p>
+
+            <section class="dash-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+                <article class="panel">
+                    <h2>Daily sales report</h2>
+                    <p class="muted">Retail fuel sales for a single calendar day.</p>
+                    <form method="get" action="{{ url_for('staff.accountant_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="daily_sales">
+                        <label class="muted" for="rep-day" style="font-size:12px;">Date</label>
+                        <input id="rep-day" name="date" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Monthly revenue report</h2>
+                    <p class="muted">Revenue by day for a calendar month.</p>
+                    <form method="get" action="{{ url_for('staff.accountant_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="monthly_revenue">
+                        <label class="muted" for="rep-ym" style="font-size:12px;">Month</label>
+                        <input id="rep-ym" name="ym" type="month" value="{{ today[:7] }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Expense report</h2>
+                    <p class="muted">All recorded expenses in a date range.</p>
+                    <form method="get" action="{{ url_for('staff.accountant_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="expenses">
+                        <label class="muted" for="exp-from" style="font-size:12px;">From</label>
+                        <input id="exp-from" name="from" type="date" value="{{ today }}" required>
+                        <label class="muted" for="exp-to" style="font-size:12px;">To</label>
+                        <input id="exp-to" name="to" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <h2>Profit &amp; loss</h2>
+                    <p class="muted">Total revenue, expenses, and net profit for a period.</p>
+                    <form method="get" action="{{ url_for('staff.accountant_reports_export') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <input type="hidden" name="kind" value="pnl">
+                        <label class="muted" for="pnl-from" style="font-size:12px;">From</label>
+                        <input id="pnl-from" name="from" type="date" value="{{ today }}" required>
+                        <label class="muted" for="pnl-to" style="font-size:12px;">To</label>
+                        <input id="pnl-to" name="to" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuelGuard - Navigation Patterns</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">{% include 'shared/brand_logo.html' %}<div><div class="side-meta">Navigation Spec</div></div></div>
+            <nav class="side-links">
+                <a class="active" href="#">Dashboard</a>
+                <a href="#">Fuel Entries</a>
+                <a href="#">Approvals</a>
+                <a href="#">Reports</a>
+                <a href="#">Settings</a>
+            </nav>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group"><h1>Navigation System</h1><div class="meta">Top-level IA with contextual side navigation</div></div>
+                <button class="btn btn-secondary">Quick Switch</button>
+            </header>
+            <article class="panel">
+                <h2>Interaction Notes</h2>
+                <div class="timeline">
+                    <div class="timeline-item">Active route highlighted with soft contrast.</div>
+                    <div class="timeline-item">Role-based links mapped to operational tasks.</div>
+                    <div class="timeline-item">Compact, mobile-friendly structure preserved.</div>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+</html>

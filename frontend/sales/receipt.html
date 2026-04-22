@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt #{{ sale['id'] }} — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-content" style="max-width:520px; margin:0 auto; padding:32px;">
+        <header class="dash-top" style="margin-bottom:20px;">
+            <div class="title-group">
+                <h1>FuelGuard — Sale receipt</h1>
+                <div class="meta">Receipt #{{ sale['id'] }}</div>
+            </div>
+            <a class="btn btn-secondary" href="{{ url_for('staff.sales_dashboard') }}">Back to dashboard</a>
+        </header>
+        <article class="panel">
+            <table style="border:0;">
+                <tbody>
+                    <tr>
+                        <td class="muted">Fuel type</td>
+                        <td><strong>{{ sale['fuel_type'] }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Quantity</td>
+                        <td>{{ '%.2f'|format(sale['quantity']) }} L</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Price / L</td>
+                        <td>K{{ '%.2f'|format(sale['price_per_litre']) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Total</td>
+                        <td><strong>K{{ '%.2f'|format(sale['total_amount']) }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Payment</td>
+                        <td>{{ sale['payment_method'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Customer</td>
+                        <td>{{ sale['customer_name'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Vehicle</td>
+                        <td>{{ sale['vehicle_number'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Date</td>
+                        <td>{{ sale['sale_date'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Salesperson</td>
+                        <td>{{ sale['salesperson_username'] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+        <p class="muted" style="text-align:center; margin-top:16px;">Thank you for using FuelGuard.</p>
+    </div>
+</body>
+
+</html>

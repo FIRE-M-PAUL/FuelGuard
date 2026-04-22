@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail prices — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Admin Control</div>
+                </div>
+            </div>
+            <nav class="side-links">
+                <a href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
+                <a class="active" href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+            </nav>
+            <div class="side-meta">Signed in as {{ session.get('username') }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Retail selling prices</h1>
+                    <div class="meta">Per-litre rates at the pump · Admin only</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <div class="panel" style="max-width:520px;">
+                <h2>Price per litre (K)</h2>
+                <p class="muted">Sales staff cannot change these values. Totals on new sales are computed from the
+                    official list price and quantity. Amounts are shown in kwacha (K).</p>
+                <form method="post" action="{{ url_for('admin.retail_prices') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="field">
+                        <label for="petrol_price">Petrol (K/L)</label>
+                        <input id="petrol_price" name="petrol_price" type="number" step="0.0001" min="0.0001" required
+                            value="{{ '%.4f'|format(prices.get('Petrol', 2.5)) }}">
+                    </div>
+                    <div class="field">
+                        <label for="diesel_price">Diesel (K/L)</label>
+                        <input id="diesel_price" name="diesel_price" type="number" step="0.0001" min="0.0001" required
+                            value="{{ '%.4f'|format(prices.get('Diesel', 2.5)) }}">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Save prices</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

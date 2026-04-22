@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register User — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">{% include 'shared/brand_logo.html' %}<div><div class="side-meta">Provisioning</div></div></div>
+            <nav class="side-links">
+                <a href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a class="active" href="{{ url_for('admin.register_user') }}">Create Accounts</a>
+                <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+            </nav>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group"><h1>User Provisioning</h1><div class="meta">Administrator: {{ session.get('username') }}</div></div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-list">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <div class="panel">
+            <h2>New user account</h2>
+            <p class="muted">Create a user here as active or inactive. Staff who use the public “Create account” page
+                are saved as pending until you approve them on the User Directory.</p>
+            <form method="post" action="{{ url_for('admin.register_user') }}" style="margin-top:16px;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required>
+                </div>
+                <div class="field">
+                    <label for="password">Temporary password</label>
+                    <input id="password" name="password" type="password" required minlength="8">
+                </div>
+                <div class="field">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected>Select role</option>
+                        <option value="sales">Sales</option>
+                        <option value="manager">Manager</option>
+                        <option value="accountant">Accountant</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="department">Department (optional)</label>
+                    <input id="department" name="department" type="text">
+                </div>
+                <div class="field">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="active" selected>Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit">Create user</button>
+            </form>
+        </div>
+        </main>
+    </div>
+</body>
+
+</html>

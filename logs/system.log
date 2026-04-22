@@ -1,0 +1,934 @@
+2026-04-20 20:18:18,326 INFO [app] GET /csrf-token
+2026-04-20 20:18:18,389 INFO [app] POST /register
+2026-04-20 20:18:19,403 INFO [app] GET /csrf-token
+2026-04-20 20:18:19,406 INFO [app] POST /login
+2026-04-20 20:18:24,190 INFO [app] GET /csrf-token
+2026-04-20 20:18:24,190 INFO [app] GET /csrf-token
+2026-04-20 20:18:24,198 INFO [app] POST /register
+2026-04-20 20:18:24,198 INFO [app] POST /register
+2026-04-20 20:18:25,681 INFO [app] GET /csrf-token
+2026-04-20 20:18:25,681 INFO [app] GET /csrf-token
+2026-04-20 20:18:25,685 INFO [app] POST /login
+2026-04-20 20:18:25,685 INFO [app] POST /login
+2026-04-20 20:18:26,966 INFO [app] GET /csrf-token
+2026-04-20 20:18:26,966 INFO [app] GET /csrf-token
+2026-04-20 20:18:26,971 INFO [app] POST /create_record
+2026-04-20 20:18:26,971 INFO [app] POST /create_record
+2026-04-20 20:18:27,025 INFO [app] GET /csrf-token
+2026-04-20 20:18:27,025 INFO [app] GET /csrf-token
+2026-04-20 20:18:27,036 INFO [app] PUT /update_record
+2026-04-20 20:18:27,036 INFO [app] PUT /update_record
+2026-04-20 20:18:27,091 INFO [app] GET /csrf-token
+2026-04-20 20:18:27,091 INFO [app] GET /csrf-token
+2026-04-20 20:18:27,099 INFO [app] DELETE /delete_record
+2026-04-20 20:18:27,099 INFO [app] DELETE /delete_record
+2026-04-20 20:20:01,688 INFO [app] GET /csrf-token
+2026-04-20 20:20:01,691 INFO [app] POST /register
+2026-04-20 20:20:03,053 INFO [app] GET /csrf-token
+2026-04-20 20:20:03,054 INFO [app] POST /login
+2026-04-20 20:20:05,119 INFO [app] GET /csrf-token
+2026-04-20 20:20:05,119 INFO [app] GET /csrf-token
+2026-04-20 20:20:05,121 INFO [app] POST /register
+2026-04-20 20:20:05,121 INFO [app] POST /register
+2026-04-20 20:20:05,756 INFO [app] GET /csrf-token
+2026-04-20 20:20:05,756 INFO [app] GET /csrf-token
+2026-04-20 20:20:05,758 INFO [app] POST /login
+2026-04-20 20:20:05,758 INFO [app] POST /login
+2026-04-20 20:20:06,385 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,385 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,388 INFO [app] POST /create_record
+2026-04-20 20:20:06,388 INFO [app] POST /create_record
+2026-04-20 20:20:06,423 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,423 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,424 INFO [app] PUT /update_record
+2026-04-20 20:20:06,424 INFO [app] PUT /update_record
+2026-04-20 20:20:06,468 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,468 INFO [app] GET /csrf-token
+2026-04-20 20:20:06,470 INFO [app] DELETE /delete_record
+2026-04-20 20:20:06,470 INFO [app] DELETE /delete_record
+2026-04-20 20:21:36,508 INFO [app] GET /csrf-token
+2026-04-20 20:21:36,540 INFO [app] POST /register
+2026-04-20 20:21:37,270 INFO [app] GET /csrf-token
+2026-04-20 20:21:37,272 INFO [app] POST /login
+2026-04-20 20:21:39,483 INFO [app] GET /csrf-token
+2026-04-20 20:21:39,483 INFO [app] GET /csrf-token
+2026-04-20 20:21:39,486 INFO [app] POST /register
+2026-04-20 20:21:39,486 INFO [app] POST /register
+2026-04-20 20:21:40,313 INFO [app] GET /csrf-token
+2026-04-20 20:21:40,313 INFO [app] GET /csrf-token
+2026-04-20 20:21:40,316 INFO [app] POST /login
+2026-04-20 20:21:40,316 INFO [app] POST /login
+2026-04-20 20:21:40,977 INFO [app] GET /csrf-token
+2026-04-20 20:21:40,977 INFO [app] GET /csrf-token
+2026-04-20 20:21:40,985 INFO [app] POST /create_record
+2026-04-20 20:21:40,985 INFO [app] POST /create_record
+2026-04-20 20:21:41,033 INFO [app] GET /csrf-token
+2026-04-20 20:21:41,033 INFO [app] GET /csrf-token
+2026-04-20 20:21:41,037 INFO [app] PUT /update_record
+2026-04-20 20:21:41,037 INFO [app] PUT /update_record
+2026-04-20 20:21:41,091 INFO [app] GET /csrf-token
+2026-04-20 20:21:41,091 INFO [app] GET /csrf-token
+2026-04-20 20:21:41,093 INFO [app] DELETE /delete_record
+2026-04-20 20:21:41,093 INFO [app] DELETE /delete_record
+2026-04-20 23:03:53,183 | INFO | Staff login success user_id=1 role=sales
+2026-04-20 23:03:56,274 | INFO | Admin login success user_id=1
+2026-04-20 23:03:57,727 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-20 23:03:59,041 | INFO | Staff login success user_id=1 role=sales
+2026-04-20 23:03:59,055 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-20 23:04:00,463 | INFO | Admin login success user_id=1
+2026-04-20 23:04:01,152 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-20 23:04:37,809 | INFO | Staff login success user_id=1 role=sales
+2026-04-20 23:04:40,646 | INFO | Admin login success user_id=1
+2026-04-20 23:04:41,938 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-20 23:04:43,216 | INFO | Staff login success user_id=1 role=sales
+2026-04-20 23:04:43,231 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-20 23:04:44,548 | INFO | Admin login success user_id=1
+2026-04-20 23:04:45,194 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 16:41:23,333 | INFO | Failed staff login attempt username='newton'
+2026-04-21 16:41:29,402 | INFO | Failed staff login attempt username='newton'
+2026-04-21 16:46:26,744 | INFO | Failed staff login attempt username='newton'
+2026-04-21 16:46:30,311 | INFO | Failed staff login attempt username='newton'
+2026-04-21 16:53:26,873 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:30,187 | INFO | Admin login success user_id=1
+2026-04-21 16:53:31,698 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 16:53:35,739 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:39,487 | INFO | Admin login success user_id=1
+2026-04-21 16:53:40,094 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 16:53:41,855 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:42,254 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:53:45,520 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:45,760 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:53:45,762 | INFO | User logout user_id=1 portal=staff
+2026-04-21 16:53:46,205 | INFO | Staff login success user_id=2 role=manager
+2026-04-21 16:53:46,426 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 16:53:48,077 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:48,138 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:53:48,143 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 16:53:50,628 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:53:50,666 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:53:50,680 | INFO | User logout user_id=1 portal=staff
+2026-04-21 16:53:51,305 | INFO | Staff login success user_id=2 role=manager
+2026-04-21 16:53:53,072 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:53:53,601 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:53:54,197 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:53:54,769 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:53:55,699 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:53:56,224 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:54:52,737 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:54:59,200 | INFO | Admin login success user_id=1
+2026-04-21 16:55:01,812 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 16:55:05,095 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:55:05,116 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 16:55:08,920 | INFO | Admin login success user_id=1
+2026-04-21 16:55:10,180 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 16:55:12,479 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:55:12,550 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:55:16,023 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:55:16,055 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:55:16,061 | INFO | User logout user_id=1 portal=staff
+2026-04-21 16:55:17,185 | INFO | Staff login success user_id=2 role=manager
+2026-04-21 16:55:17,204 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 16:55:20,554 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:55:20,586 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:55:20,594 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 16:55:25,090 | INFO | Staff login success user_id=1 role=sales
+2026-04-21 16:55:25,126 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 16:55:25,133 | INFO | User logout user_id=1 portal=staff
+2026-04-21 16:55:26,054 | INFO | Staff login success user_id=2 role=manager
+2026-04-21 16:55:28,723 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:55:29,765 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:55:30,795 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:55:32,279 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:55:33,445 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 16:55:33,449 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 17:02:59,639 | INFO | Admin login success user_id=1
+2026-04-21 17:03:03,222 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 17:03:10,688 | INFO | Admin login success user_id=1
+2026-04-21 17:04:15,854 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:18,530 | INFO | Login success user_id=1 role=admin
+2026-04-21 17:04:21,932 | INFO | Admin login success user_id=1
+2026-04-21 17:04:24,614 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 17:04:27,405 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:27,419 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 17:04:32,867 | INFO | Admin login success user_id=1
+2026-04-21 17:04:34,752 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 17:04:37,136 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:37,184 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:04:41,140 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:41,168 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:04:41,170 | INFO | User logout user_id=1
+2026-04-21 17:04:42,280 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:04:42,300 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 17:04:44,782 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:44,804 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:04:44,806 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 17:04:48,318 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:04:48,339 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:04:48,341 | INFO | User logout user_id=1
+2026-04-21 17:04:49,446 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:04:52,102 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:04:53,204 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:04:54,301 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:04:55,396 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:04:56,490 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:04:56,492 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 17:12:16,773 | WARNING | No users in database and ADMIN_INITIAL_PASSWORD not set; create an admin user manually or set ADMIN_INITIAL_PASSWORD once.
+2026-04-21 17:12:18,289 | WARNING | No users in database and ADMIN_INITIAL_PASSWORD not set; create an admin user manually or set ADMIN_INITIAL_PASSWORD once.
+2026-04-21 17:17:25,969 | WARNING | CSRF validation failed path=/register reason=The CSRF session token is missing.
+2026-04-21 17:22:43,948 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:22:46,574 | INFO | Login success user_id=1 role=admin
+2026-04-21 17:22:49,761 | INFO | Admin login success user_id=1
+2026-04-21 17:22:53,317 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 17:22:56,839 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:22:56,870 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 17:23:03,344 | INFO | Admin login success user_id=1
+2026-04-21 17:23:04,816 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 17:23:10,161 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:23:10,208 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:23:13,918 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:23:13,940 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:23:13,943 | INFO | User logout user_id=1
+2026-04-21 17:23:14,926 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:23:14,949 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 17:23:18,483 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:23:18,504 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:23:18,507 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 17:23:22,777 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:23:22,799 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:23:22,802 | INFO | User logout user_id=1
+2026-04-21 17:23:23,713 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:23:26,543 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:23:27,860 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:23:28,850 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:23:30,055 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:23:31,210 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:23:31,212 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 17:23:48,034 | WARNING | No users in database and ADMIN_INITIAL_PASSWORD not set; create an admin user manually or set ADMIN_INITIAL_PASSWORD once.
+2026-04-21 17:23:49,326 | WARNING | No users in database and ADMIN_INITIAL_PASSWORD not set; create an admin user manually or set ADMIN_INITIAL_PASSWORD once.
+2026-04-21 17:27:05,918 | INFO | User registration success username='Coco-_-Boy' role=sales
+2026-04-21 17:27:55,853 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:33:56,220 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:00,429 | INFO | Login success user_id=1 role=admin
+2026-04-21 17:34:10,881 | INFO | Admin login success user_id=1
+2026-04-21 17:34:19,941 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 17:34:25,357 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:25,387 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 17:34:32,171 | INFO | Admin login success user_id=1
+2026-04-21 17:34:33,559 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 17:34:38,143 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:38,227 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:34:44,379 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:44,438 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:34:44,444 | INFO | User logout user_id=1
+2026-04-21 17:34:45,995 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:34:46,024 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 17:34:49,559 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:49,590 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:34:49,594 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 17:34:55,242 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:34:55,262 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:34:55,268 | INFO | User logout user_id=1
+2026-04-21 17:34:57,261 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:35:01,727 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:35:03,218 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:35:04,921 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:35:06,458 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:35:08,164 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:35:08,170 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 17:43:36,676 | INFO | User registration success username='Blaze-_-Fire' role=manager
+2026-04-21 17:43:48,927 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:44:53,090 | INFO | User logout user_id=2
+2026-04-21 17:58:15,887 | INFO | System admin account initialized username='admin'.
+2026-04-21 17:58:52,099 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:58:56,464 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 17:59:00,635 | INFO | Admin login success user_id=1
+2026-04-21 17:59:04,100 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 17:59:08,229 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:59:08,256 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 17:59:15,432 | INFO | Admin login success user_id=1
+2026-04-21 17:59:16,982 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 17:59:21,435 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:59:21,491 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:59:25,887 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:59:25,915 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:59:25,917 | INFO | User logout user_id=1
+2026-04-21 17:59:27,176 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:59:27,197 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 17:59:30,165 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:59:30,197 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:59:30,199 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 17:59:34,514 | INFO | Login success user_id=1 role=sales
+2026-04-21 17:59:34,540 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 17:59:34,546 | INFO | User logout user_id=1
+2026-04-21 17:59:35,933 | INFO | Login success user_id=2 role=manager
+2026-04-21 17:59:39,092 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:59:40,341 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:59:41,762 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:59:42,950 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:59:44,385 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 17:59:44,395 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 18:01:49,628 | INFO | Failed admin login attempt username='admin'
+2026-04-21 18:02:22,584 | INFO | Admin login success user_id=3
+2026-04-21 18:10:47,434 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:10:51,710 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 18:10:56,416 | INFO | Admin login success user_id=1
+2026-04-21 18:10:59,630 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 18:11:04,121 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:04,197 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 18:11:11,865 | INFO | Admin login success user_id=1
+2026-04-21 18:11:13,519 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 18:11:17,128 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:17,176 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:11:23,181 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:23,201 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:11:23,204 | INFO | User logout user_id=1
+2026-04-21 18:11:24,668 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:11:24,693 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 18:11:28,372 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:28,404 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:11:28,410 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 18:11:33,668 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:33,694 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:11:33,697 | INFO | User logout user_id=1
+2026-04-21 18:11:35,021 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:11:38,218 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:38,248 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:11:41,916 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:11:41,917 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:11:45,219 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:51,014 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:11:53,684 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:11:56,353 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:11:57,847 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:11:57,878 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:11:58,952 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:12:02,080 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:12:02,086 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 18:12:04,887 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:12:04,898 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:12:10,475 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:12:19,262 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:12:19,351 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:12:23,837 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:12:23,842 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:12:27,303 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:12:52,370 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:12:55,380 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 18:12:58,314 | INFO | Admin login success user_id=1
+2026-04-21 18:13:01,235 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 18:13:04,228 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:04,258 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 18:13:11,046 | INFO | Admin login success user_id=1
+2026-04-21 18:13:12,380 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 18:13:15,571 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:15,614 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:13:21,300 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:21,322 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:13:21,327 | INFO | User logout user_id=1
+2026-04-21 18:13:22,469 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:13:22,492 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 18:13:25,383 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:25,401 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:13:25,403 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 18:13:29,297 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:29,317 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:13:29,319 | INFO | User logout user_id=1
+2026-04-21 18:13:30,566 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:13:33,498 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:33,518 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:13:36,965 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:13:36,967 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:13:40,170 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:13:44,275 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:13:45,876 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:13:47,217 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:13:48,715 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:13:50,129 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:13:50,131 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 18:15:15,749 | INFO | User logout user_id=3
+2026-04-21 18:15:48,038 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:04,702 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:27:08,074 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:08,122 | WARNING | Forbidden: role='sales' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 18:27:10,933 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:27:10,991 | WARNING | Forbidden: role='accountant' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:27:13,810 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:27:16,614 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:27:16,693 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 18:27:20,056 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:27:20,123 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 18:27:22,870 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:26,227 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 18:27:29,367 | INFO | Admin login success user_id=1
+2026-04-21 18:27:32,231 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 18:27:35,268 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:35,304 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 18:27:43,169 | INFO | Admin login success user_id=1
+2026-04-21 18:27:44,550 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 18:27:48,238 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:48,312 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:27:53,215 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:53,235 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:27:53,237 | INFO | User logout user_id=1
+2026-04-21 18:27:54,568 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:27:54,586 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 18:27:58,472 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:27:58,507 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:27:58,514 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 18:28:03,518 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:28:03,547 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:28:03,549 | INFO | User logout user_id=1
+2026-04-21 18:28:05,130 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:28:09,306 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:28:09,341 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:28:12,801 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:28:12,803 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:28:16,333 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:28:20,529 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:28:22,048 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:28:23,429 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:28:25,271 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:28:26,702 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:28:26,704 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 18:32:01,354 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:32:04,306 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:04,344 | WARNING | Forbidden: role='sales' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 18:32:07,385 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:32:07,434 | WARNING | Forbidden: role='accountant' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:32:09,747 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:32:12,206 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:32:12,264 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 18:32:14,661 | INFO | Login success user_id=1 role=accountant
+2026-04-21 18:32:14,699 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 18:32:17,367 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:20,164 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 18:32:22,558 | INFO | Admin login success user_id=1
+2026-04-21 18:32:24,971 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 18:32:27,286 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:27,312 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 18:32:33,435 | INFO | Admin login success user_id=1
+2026-04-21 18:32:34,872 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 18:32:37,814 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:37,867 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:32:41,108 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:41,144 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:32:41,147 | INFO | User logout user_id=1
+2026-04-21 18:32:42,196 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:32:42,227 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 18:32:44,506 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:44,543 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:32:44,546 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 18:32:47,689 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:47,724 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:32:47,727 | INFO | User logout user_id=1
+2026-04-21 18:32:48,620 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:32:50,936 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:50,955 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5
+2026-04-21 18:32:53,217 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:32:53,219 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 18:32:55,537 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:32:57,900 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:33:00,633 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:33:00,674 | WARNING | Forbidden: role='manager' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 18:33:03,519 | INFO | Login success user_id=1 role=manager
+2026-04-21 18:33:08,572 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:33:08,606 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 18:33:08,607 | INFO | User logout user_id=1
+2026-04-21 18:33:09,458 | INFO | Login success user_id=2 role=manager
+2026-04-21 18:33:09,527 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-21 18:33:10,499 | INFO | Login success user_id=1 role=sales
+2026-04-21 18:33:13,479 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:33:14,452 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:33:15,432 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:33:16,320 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:33:17,221 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 18:33:17,223 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 22:05:42,470 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:06:14,187 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:08:33,763 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:08:33,795 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 22:08:37,912 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:08:37,914 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 22:08:42,604 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:08:46,442 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:08:46,477 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 22:08:51,212 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:08:51,246 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 22:08:57,208 | INFO | Admin login success user_id=1
+2026-04-21 22:08:57,298 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 22:08:57,303 | INFO | User logout user_id=1
+2026-04-21 22:08:58,872 | INFO | Login success user_id=2 role=sales
+2026-04-21 22:08:58,944 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 22:09:03,161 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:09:07,397 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 22:09:12,731 | INFO | Admin login success user_id=1
+2026-04-21 22:09:16,209 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 22:09:20,105 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:09:20,144 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 22:09:29,074 | INFO | Admin login success user_id=1
+2026-04-21 22:09:30,693 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 22:10:34,161 | INFO | Login success user_id=1 role=accountant
+2026-04-21 22:10:38,120 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:10:38,176 | WARNING | Forbidden: role='sales' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 22:10:42,222 | INFO | Login success user_id=1 role=accountant
+2026-04-21 22:10:42,415 | WARNING | Forbidden: role='accountant' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 22:10:46,711 | INFO | Login success user_id=1 role=accountant
+2026-04-21 22:10:50,902 | INFO | Login success user_id=1 role=accountant
+2026-04-21 22:10:50,996 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 22:10:54,983 | INFO | Login success user_id=1 role=accountant
+2026-04-21 22:10:55,090 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 22:10:58,744 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:02,896 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 22:11:06,186 | INFO | Admin login success user_id=1
+2026-04-21 22:11:09,508 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 22:11:12,643 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:12,697 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 22:11:22,698 | INFO | Admin login success user_id=1
+2026-04-21 22:11:24,762 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 22:11:28,724 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:28,838 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 22:11:34,004 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:34,044 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 22:11:34,048 | INFO | User logout user_id=1
+2026-04-21 22:11:35,721 | INFO | Login success user_id=2 role=manager
+2026-04-21 22:11:35,759 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 22:11:40,180 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:40,227 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 22:11:40,231 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 22:11:47,115 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:47,174 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 22:11:47,177 | INFO | User logout user_id=1
+2026-04-21 22:11:49,988 | INFO | Login success user_id=2 role=manager
+2026-04-21 22:11:53,949 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:11:53,977 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 22:11:58,174 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:11:58,176 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 22:12:02,013 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:12:06,911 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:12:06,963 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 22:12:11,543 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:12:11,599 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 22:12:17,470 | INFO | Admin login success user_id=1
+2026-04-21 22:12:17,572 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 22:12:17,575 | INFO | User logout user_id=1
+2026-04-21 22:12:20,220 | INFO | Login success user_id=2 role=sales
+2026-04-21 22:12:20,297 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 22:12:24,789 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:12:28,897 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:12:28,947 | WARNING | Forbidden: role='manager' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 22:12:36,198 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:12:54,897 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:12:54,938 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 22:12:54,943 | INFO | User logout user_id=1
+2026-04-21 22:12:57,697 | INFO | Login success user_id=2 role=manager
+2026-04-21 22:12:57,861 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-21 22:13:00,777 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:13:05,701 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 22:13:09,649 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 22:13:12,521 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 22:13:14,775 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 22:13:16,489 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 22:13:16,494 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 22:25:25,844 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:25:29,232 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 22:25:32,744 | INFO | Admin login success user_id=1
+2026-04-21 22:25:36,181 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 22:25:40,427 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:25:40,501 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 22:25:49,931 | INFO | Admin login success user_id=1
+2026-04-21 22:25:52,540 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 22:25:57,533 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:25:57,563 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 22:26:02,045 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:26:02,047 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 22:26:05,964 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:26:09,950 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:26:09,979 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 22:26:13,815 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:26:13,869 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 22:26:20,550 | INFO | Admin login success user_id=1
+2026-04-21 22:26:20,633 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 22:26:20,635 | INFO | User logout user_id=1
+2026-04-21 22:26:22,184 | INFO | Login success user_id=2 role=sales
+2026-04-21 22:26:22,267 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 22:29:46,019 | INFO | User logout user_id=1
+2026-04-21 22:30:30,184 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:32:41,296 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:33:08,070 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:35:10,468 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:38:10,371 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:38:15,418 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 22:38:22,066 | INFO | Admin login success user_id=1
+2026-04-21 22:38:28,147 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 22:38:33,313 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:38:33,404 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 22:38:44,615 | INFO | Admin login success user_id=1
+2026-04-21 22:38:48,217 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 22:38:55,536 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:38:55,583 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 22:38:59,986 | INFO | Login success user_id=1 role=manager
+2026-04-21 22:38:59,988 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 22:39:04,359 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:39:08,750 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:39:08,776 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 22:39:13,731 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:39:13,794 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 22:39:21,834 | INFO | Admin login success user_id=1
+2026-04-21 22:39:21,959 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 22:39:21,964 | INFO | User logout user_id=1
+2026-04-21 22:39:23,814 | INFO | Login success user_id=2 role=sales
+2026-04-21 22:39:23,885 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 22:42:58,544 | INFO | Failed admin login attempt username='admin'
+2026-04-21 22:48:59,787 | INFO | Admin login success user_id=3
+2026-04-21 22:52:22,196 | INFO | User logout user_id=3
+2026-04-21 22:52:27,581 | INFO | Login success user_id=1 role=sales
+2026-04-21 22:52:28,286 | WARNING | CSRF validation failed path=/admin/retail_prices reason=The CSRF tokens do not match.
+2026-04-21 22:52:56,447 | INFO | Admin login success user_id=3
+2026-04-21 22:53:32,597 | INFO | Admin updated retail selling prices admin_id=3 fuels=['Diesel', 'Petrol']
+2026-04-21 22:55:30,091 | WARNING | Forbidden: role='admin' required=['sales'] user_id=3 path=/sales/dashboard
+2026-04-21 22:55:37,169 | INFO | User logout user_id=3
+2026-04-21 22:55:40,874 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:00:46,025 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.0 list_price=27.15
+2026-04-21 23:01:32,366 | INFO | User logout user_id=1
+2026-04-21 23:01:54,395 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:02:36,366 | INFO | Manager report export kind='daily_sales' user_id=2
+2026-04-21 23:08:39,265 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:08:42,572 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 23:08:46,643 | INFO | Admin login success user_id=1
+2026-04-21 23:08:50,643 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 23:08:54,219 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:08:54,251 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 23:09:03,997 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-21 23:09:08,142 | INFO | Pending account login attempt username='newsales'
+2026-04-21 23:09:10,430 | INFO | Admin login success user_id=1
+2026-04-21 23:09:11,714 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-21 23:09:13,277 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:09:18,139 | INFO | Admin login success user_id=1
+2026-04-21 23:09:20,274 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 23:09:58,124 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:10:01,590 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:01,654 | WARNING | Forbidden: role='sales' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 23:10:05,271 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:10:05,374 | WARNING | Forbidden: role='accountant' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 23:10:08,437 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:10:11,395 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:10:11,516 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 23:10:14,384 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:10:14,465 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 23:10:17,373 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:20,854 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 23:10:24,283 | INFO | Admin login success user_id=1
+2026-04-21 23:10:27,316 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 23:10:30,703 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:30,755 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/manager/dashboard
+2026-04-21 23:10:39,760 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-21 23:10:41,167 | INFO | Pending account login attempt username='newsales'
+2026-04-21 23:10:42,190 | INFO | Admin login success user_id=1
+2026-04-21 23:10:42,271 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-21 23:10:43,981 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:10:47,636 | INFO | Admin login success user_id=1
+2026-04-21 23:10:48,569 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 23:10:51,274 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:51,330 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:10:55,630 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:55,667 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:10:55,670 | INFO | User logout user_id=1
+2026-04-21 23:10:56,652 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:10:56,685 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 23:10:59,675 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:10:59,713 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:10:59,719 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 23:11:04,163 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:04,202 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:11:04,205 | INFO | User logout user_id=1
+2026-04-21 23:11:05,710 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:11:11,455 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:11,506 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 23:11:15,859 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:11:15,866 | WARNING | Forbidden: role='manager' required=['sales'] user_id=1 path=/sales/sell
+2026-04-21 23:11:22,350 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:26,516 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:26,550 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 23:11:30,077 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:30,140 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 23:11:34,644 | INFO | Admin login success user_id=1
+2026-04-21 23:11:34,791 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 23:11:34,802 | INFO | User logout user_id=1
+2026-04-21 23:11:36,820 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:11:36,885 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 23:11:40,100 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:11:43,204 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:11:43,249 | WARNING | Forbidden: role='manager' required=['accountant'] user_id=1 path=/accountant/dashboard
+2026-04-21 23:11:46,471 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:11:52,549 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:11:52,598 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:11:52,604 | INFO | User logout user_id=1
+2026-04-21 23:11:53,919 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:11:54,021 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-21 23:11:56,892 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:12:01,701 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:12:03,814 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:12:06,525 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:12:08,856 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:12:10,410 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:12:10,416 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 23:49:52,098 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:49:53,840 | INFO | Admin login success user_id=1
+2026-04-21 23:49:55,131 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-21 23:50:08,790 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:50:10,999 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:12,757 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:50:14,446 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:50:15,961 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:50:16,047 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 23:50:17,528 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:50:17,596 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 23:50:19,967 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:22,158 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 23:50:23,676 | INFO | Admin login success user_id=1
+2026-04-21 23:50:25,292 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 23:50:26,789 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:30,381 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-21 23:50:30,835 | INFO | Pending account login attempt username='newsales'
+2026-04-21 23:50:31,285 | INFO | Admin login success user_id=1
+2026-04-21 23:50:31,378 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-21 23:50:31,827 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:50:33,428 | INFO | Admin login success user_id=1
+2026-04-21 23:50:34,078 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 23:50:35,639 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:35,712 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:50:37,541 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:37,601 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:50:37,605 | INFO | User logout user_id=1
+2026-04-21 23:50:38,071 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:50:38,125 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 23:50:39,530 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:39,587 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:50:39,594 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 23:50:41,561 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:41,622 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:50:41,625 | INFO | User logout user_id=1
+2026-04-21 23:50:42,091 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:50:43,724 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:43,764 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 23:50:45,256 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:50:46,873 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:48,364 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:48,405 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 23:50:49,822 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:49,890 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 23:50:51,821 | INFO | Admin login success user_id=1
+2026-04-21 23:50:51,905 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 23:50:51,907 | INFO | User logout user_id=1
+2026-04-21 23:50:52,377 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:50:52,444 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 23:50:53,866 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:50:55,361 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:50:56,816 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:50:58,736 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:50:58,792 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:50:58,794 | INFO | User logout user_id=1
+2026-04-21 23:50:59,257 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:50:59,352 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-21 23:50:59,798 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:51:01,761 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:51:02,242 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:51:02,709 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:51:03,178 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:51:03,649 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:51:03,666 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 23:51:10,447 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:51:12,097 | INFO | Admin login success user_id=1
+2026-04-21 23:51:13,141 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-21 23:51:47,935 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:51:49,976 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:51:51,923 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:51:53,531 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:51:55,011 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:51:55,097 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-21 23:51:56,579 | INFO | Login success user_id=1 role=accountant
+2026-04-21 23:51:56,650 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-21 23:51:58,067 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:51:59,538 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 23:52:00,976 | INFO | Admin login success user_id=1
+2026-04-21 23:52:02,430 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 23:52:03,849 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:08,390 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-21 23:52:08,843 | INFO | Pending account login attempt username='newsales'
+2026-04-21 23:52:09,305 | INFO | Admin login success user_id=1
+2026-04-21 23:52:09,377 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-21 23:52:09,826 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:52:11,427 | INFO | Admin login success user_id=1
+2026-04-21 23:52:11,977 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 23:52:13,577 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:13,647 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:52:15,494 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:15,545 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:52:15,547 | INFO | User logout user_id=1
+2026-04-21 23:52:16,026 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:52:16,075 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-21 23:52:17,522 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:17,576 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:52:17,581 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-21 23:52:20,261 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:20,314 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:52:20,317 | INFO | User logout user_id=1
+2026-04-21 23:52:20,815 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:52:22,318 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:22,363 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-21 23:52:24,239 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:52:25,659 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:27,147 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:27,190 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-21 23:52:28,641 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:28,693 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-21 23:52:30,582 | INFO | Admin login success user_id=1
+2026-04-21 23:52:30,665 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-21 23:52:30,667 | INFO | User logout user_id=1
+2026-04-21 23:52:31,147 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:52:31,213 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-21 23:52:32,639 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:52:34,118 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:52:35,847 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:52:37,819 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:37,878 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-21 23:52:37,880 | INFO | User logout user_id=1
+2026-04-21 23:52:38,356 | INFO | Login success user_id=2 role=manager
+2026-04-21 23:52:38,457 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-21 23:52:38,906 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:52:41,145 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:52:41,624 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:52:42,100 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:52:42,579 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:52:43,056 | INFO | Failed staff login attempt username='sales1'
+2026-04-21 23:52:43,077 | WARNING | Locked staff login attempt username='sales1'
+2026-04-21 23:52:50,533 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:52:52,951 | INFO | Admin login success user_id=1
+2026-04-21 23:52:54,099 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-21 23:53:17,611 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:53:19,216 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-21 23:53:20,799 | INFO | Admin login success user_id=1
+2026-04-21 23:53:22,399 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-21 23:53:23,849 | INFO | Login success user_id=1 role=sales
+2026-04-21 23:53:27,420 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-21 23:53:27,896 | INFO | Pending account login attempt username='newsales'
+2026-04-21 23:53:28,364 | INFO | Admin login success user_id=1
+2026-04-21 23:53:28,430 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-21 23:53:28,877 | INFO | Login success user_id=2 role=sales
+2026-04-21 23:53:30,373 | INFO | Admin login success user_id=1
+2026-04-21 23:53:30,907 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-21 23:53:38,115 | INFO | Login success user_id=1 role=manager
+2026-04-21 23:53:39,581 | INFO | Admin login success user_id=1
+2026-04-21 23:53:40,682 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-22 00:00:41,616 | INFO | Admin login success user_id=3
+2026-04-22 00:02:49,333 | INFO | User deleted by admin admin_id=3 deleted_user_id=1
+2026-04-22 00:02:56,653 | INFO | User deleted by admin admin_id=3 deleted_user_id=2
+2026-04-22 00:08:23,924 | INFO | User created by admin admin_id=3 new_user_id=4 role=accountant username='Blaze-_-Fire'
+2026-04-22 00:08:55,750 | INFO | User logout user_id=3
+2026-04-22 00:09:09,782 | INFO | Login success user_id=4 role=accountant
+2026-04-22 00:09:56,886 | INFO | User logout user_id=4
+2026-04-22 00:10:04,487 | INFO | Failed staff login attempt username='coco-_-boy'
+2026-04-22 00:14:11,935 | WARNING | CSRF validation failed path=/admin/register_user reason=The CSRF tokens do not match.
+2026-04-22 00:14:44,847 | INFO | Admin login success user_id=3
+2026-04-22 00:17:03,943 | INFO | User created by admin admin_id=3 new_user_id=5 role=sales username='Jeff-_-Simz'
+2026-04-22 00:17:15,230 | INFO | User logout user_id=3
+2026-04-22 00:17:40,328 | INFO | Login success user_id=5 role=sales
+2026-04-22 00:19:57,196 | WARNING | CSRF validation failed path=/admin/register_user reason=The CSRF tokens do not match.
+2026-04-22 00:20:54,421 | INFO | Admin login success user_id=3
+2026-04-22 00:21:45,095 | INFO | User created by admin admin_id=3 new_user_id=6 role=manager username='Grace-_-Mira'
+2026-04-22 00:22:20,302 | WARNING | CSRF validation failed path=/login/manager reason=The CSRF tokens do not match.
+2026-04-22 00:24:20,248 | INFO | User logout user_id=3
+2026-04-22 00:25:19,312 | INFO | Login success user_id=6 role=manager
+2026-04-22 00:26:04,685 | WARNING | CSRF validation failed path=/logout reason=The CSRF tokens do not match.
+2026-04-22 00:26:09,886 | INFO | User logout user_id=6
+2026-04-22 00:26:21,092 | INFO | Login success user_id=5 role=sales
+2026-04-22 00:26:32,483 | INFO | User logout user_id=5
+2026-04-22 00:26:40,699 | INFO | Login success user_id=4 role=accountant
+2026-04-22 00:26:50,238 | INFO | User logout user_id=4
+2026-04-22 00:26:58,507 | INFO | Login success user_id=5 role=sales
+2026-04-22 00:30:18,821 | WARNING | Unauthorized admin area access attempt user_id=5 role=sales path=/admin/register_user
+2026-04-22 00:31:39,573 | INFO | Login success user_id=1 role=accountant
+2026-04-22 00:31:41,410 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:31:43,271 | INFO | Login success user_id=1 role=accountant
+2026-04-22 00:31:45,021 | INFO | Login success user_id=1 role=accountant
+2026-04-22 00:31:46,738 | INFO | Login success user_id=1 role=accountant
+2026-04-22 00:31:46,836 | INFO | Expense recorded id=1 accountant_id=1
+2026-04-22 00:31:48,551 | INFO | Login success user_id=1 role=accountant
+2026-04-22 00:31:48,676 | INFO | Accountant export kind='daily_sales' user_id=1
+2026-04-22 00:31:50,146 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:31:51,639 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-22 00:31:53,054 | INFO | Admin login success user_id=1
+2026-04-22 00:31:54,996 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-22 00:31:56,442 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:00,139 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-22 00:32:00,648 | INFO | Pending account login attempt username='newsales'
+2026-04-22 00:32:01,138 | INFO | Admin login success user_id=1
+2026-04-22 00:32:01,217 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-22 00:32:01,690 | INFO | Login success user_id=2 role=sales
+2026-04-22 00:32:03,318 | INFO | Admin login success user_id=1
+2026-04-22 00:32:03,980 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'
+2026-04-22 00:32:05,576 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:05,671 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-22 00:32:07,940 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:07,998 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-22 00:32:08,001 | INFO | User logout user_id=1
+2026-04-22 00:32:08,501 | INFO | Login success user_id=2 role=manager
+2026-04-22 00:32:08,553 | INFO | Fuel record reviewed record_id=1 status=approved reviewed_by=2
+2026-04-22 00:32:10,048 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:10,102 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-22 00:32:10,108 | WARNING | Forbidden: role='sales' required=['manager'] user_id=1 path=/api/fuel/records/1/review
+2026-04-22 00:32:12,138 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:12,195 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-22 00:32:12,199 | INFO | User logout user_id=1
+2026-04-22 00:32:12,728 | INFO | Login success user_id=2 role=manager
+2026-04-22 00:32:14,489 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:14,532 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=2.5
+2026-04-22 00:32:16,199 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:32:18,677 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:21,383 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:21,442 | INFO | Fuel sale recorded sale_id=1 salesperson_id=1 fuel_type='Petrol' quantity=10.5 list_price=9.99
+2026-04-22 00:32:23,217 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:23,288 | WARNING | Unauthorized admin area access attempt user_id=1 role=sales path=/admin/retail_prices
+2026-04-22 00:32:25,906 | INFO | Admin login success user_id=1
+2026-04-22 00:32:26,059 | INFO | Admin updated retail selling prices admin_id=1 fuels=['Diesel', 'Petrol']
+2026-04-22 00:32:26,064 | INFO | User logout user_id=1
+2026-04-22 00:32:26,717 | INFO | Login success user_id=2 role=sales
+2026-04-22 00:32:26,852 | INFO | Fuel sale recorded sale_id=1 salesperson_id=2 fuel_type='Petrol' quantity=2.0 list_price=4.0
+2026-04-22 00:32:28,487 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:32:30,453 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:32:32,667 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:32:35,116 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:35,189 | INFO | Fuel record created record_id=1 submitted_by=1
+2026-04-22 00:32:35,191 | INFO | User logout user_id=1
+2026-04-22 00:32:35,842 | INFO | Login success user_id=2 role=manager
+2026-04-22 00:32:36,245 | INFO | Manager approved operational request request_id=1 manager_id=2
+2026-04-22 00:32:36,792 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:32:39,105 | INFO | Failed staff login attempt username='sales1'
+2026-04-22 00:32:39,655 | INFO | Failed staff login attempt username='sales1'
+2026-04-22 00:32:40,207 | INFO | Failed staff login attempt username='sales1'
+2026-04-22 00:32:40,763 | INFO | Failed staff login attempt username='sales1'
+2026-04-22 00:32:41,247 | INFO | Failed staff login attempt username='sales1'
+2026-04-22 00:32:41,267 | WARNING | Locked staff login attempt username='sales1'
+2026-04-22 00:32:49,068 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:32:51,329 | INFO | Admin login success user_id=1
+2026-04-22 00:32:52,649 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-22 00:33:16,043 | INFO | Fuel sale recorded sale_id=2 salesperson_id=5 fuel_type='Diesel' quantity=25.0 list_price=29.78
+2026-04-22 00:33:24,334 | INFO | User logout user_id=5
+2026-04-22 00:34:04,969 | INFO | Login success user_id=4 role=accountant
+2026-04-22 00:34:27,064 | INFO | User logout user_id=4
+2026-04-22 00:34:34,443 | INFO | Login success user_id=6 role=manager
+2026-04-22 00:39:56,811 | INFO | Login success user_id=1 role=manager
+2026-04-22 00:39:58,637 | INFO | Admin login success user_id=1
+2026-04-22 00:40:00,141 | WARNING | CSRF validation failed path=/admin/login reason=The CSRF token is missing.
+2026-04-22 00:40:01,595 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:40:03,044 | WARNING | Blocked admin login on shared portal username='admin'
+2026-04-22 00:40:04,620 | INFO | Admin login success user_id=1
+2026-04-22 00:40:06,071 | INFO | Non-admin attempted admin portal login username='sales1' role='sales'
+2026-04-22 00:40:07,457 | INFO | Login success user_id=1 role=sales
+2026-04-22 00:40:11,163 | INFO | User registration pending admin approval username='newsales' role=sales
+2026-04-22 00:40:11,660 | INFO | Pending account login attempt username='newsales'
+2026-04-22 00:40:12,117 | INFO | Admin login success user_id=1
+2026-04-22 00:40:12,186 | INFO | User status changed by admin admin_id=1 user_id=2 status=active
+2026-04-22 00:40:12,642 | INFO | Login success user_id=2 role=sales
+2026-04-22 00:40:14,276 | INFO | Admin login success user_id=1
+2026-04-22 00:40:14,864 | INFO | User created by admin admin_id=1 new_user_id=2 role=accountant username='acct1'

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuelGuard — Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1>Create Account</h1>
+            <p class="subtitle">Register as sales, manager, or accountant. Your account is pending until an
+                administrator approves it in the admin portal—only then can you sign in.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <form method="post" action="{{ url_for('staff.register') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="field">
+                    <label for="full_name">Full Name</label>
+                    <input id="full_name" name="full_name" type="text" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required>
+                </div>
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="password-field">
+                        <input id="password" name="password" type="password" minlength="8" required
+                            data-password-toggle="true">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="confirm_password">Confirm Password</label>
+                    <div class="password-field">
+                        <input id="confirm_password" name="confirm_password" type="password" minlength="8" required
+                            data-password-toggle="true">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" name="phone" type="text" required>
+                </div>
+                <div class="field">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="sales" {% if selected_role == "sales" %}selected{% endif %}>Salesperson</option>
+                        <option value="manager" {% if selected_role == "manager" %}selected{% endif %}>Manager</option>
+                        <option value="accountant" {% if selected_role == "accountant" %}selected{% endif %}>Accountant
+                        </option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit">Create Account</button>
+            </form>
+
+            <div class="portal-links">
+                <a href="{{ url_for('staff.login') }}">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/password-toggle.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval requests — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Operations Control</div>
+                </div>
+            </div>
+            {% include 'shared/manager_nav.html' %}
+            <div class="side-meta">Department: {{ user['department'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Approval requests</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <article class="panel">
+                <h2>Queue</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Requested by</th>
+                                <th>Request date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in requests %}
+                            <tr>
+                                <td>#{{ r['id'] }}</td>
+                                <td>{{ r['request_type'] }}</td>
+                                <td>{{ r['description'] }}</td>
+                                <td><span class="status-pill">{{ r['status'] }}</span></td>
+                                <td>{{ r['requested_by_username'] }}</td>
+                                <td>{{ r['request_date'] }}</td>
+                                <td>
+                                    {% if r['status'] == 'Pending' %}
+                                    <form method="post"
+                                        action="{{ url_for('staff.manager_approve_request', request_id=r['id']) }}"
+                                        style="display:inline;margin:0 4px 0 0;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-primary" type="submit"
+                                            style="padding:6px 12px;font-size:12px;">Approve</button>
+                                    </form>
+                                    <form method="post"
+                                        action="{{ url_for('staff.manager_reject_request', request_id=r['id']) }}"
+                                        style="display:inline;margin:0;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-secondary" type="submit"
+                                            style="padding:6px 12px;font-size:12px;">Reject</button>
+                                    </form>
+                                    {% else %}
+                                    <span class="muted">{{ r['decision_date'] or '—' }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="muted">No requests in the queue.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
+
+</html>
