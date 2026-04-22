@@ -205,3 +205,17 @@
 2026-04-22 08:12:59,927 | INFO | Login success user_id=6 role=manager
 2026-04-22 08:13:26,796 | INFO | User logout user_id=6
 2026-04-22 08:13:31,658 | INFO | Login success user_id=5 role=sales
+2026-04-22 15:04:25,960 | INFO | Login success user_id=5 role=sales
+2026-04-22 15:05:10,151 | INFO | Fuel sale recorded sale_id=3 salesperson_id=5 fuel_type='Petrol' quantity=10.0 list_price=27.15
+2026-04-22 15:05:57,657 | INFO | User logout user_id=5
+2026-04-22 15:06:06,814 | INFO | Login success user_id=6 role=manager
+2026-04-22 15:07:01,229 | INFO | Admin login success user_id=3
+2026-04-22 15:09:40,511 | INFO | User status changed by admin admin_id=3 user_id=5 status=inactive
+2026-04-22 15:09:56,226 | INFO | User status changed by admin admin_id=3 user_id=5 status=active
+2026-04-22 15:10:07,266 | INFO | User status changed by admin admin_id=3 user_id=5 status=inactive
+2026-04-22 15:10:48,797 | WARNING | CSRF validation failed path=/logout reason=The CSRF tokens do not match.
+2026-04-22 15:10:52,886 | INFO | User logout user_id=3
+2026-04-22 15:11:00,283 | INFO | Disabled account login attempt username='jeff-_-simz'
+2026-04-22 15:11:14,179 | WARNING | CSRF validation failed path=/admin/users/5/toggle_status reason=The CSRF tokens do not match.
+2026-04-22 15:12:05,582 | INFO | Admin login success user_id=3
+2026-04-22 15:12:13,587 | INFO | User status changed by admin admin_id=3 user_id=5 status=active

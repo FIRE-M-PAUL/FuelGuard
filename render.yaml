@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: fuelguard
+    runtime: docker
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: OPEN_BROWSER
+        value: "0"
+      - key: DATABASE_PATH
+        value: /var/data/fuelguard.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_EMAIL
+        value: admin@fuelguard.local
+      - key: ADMIN_INITIAL_PASSWORD
+        sync: false
+    disk:
+      name: fuelguard-data
+      mountPath: /var/data
+      sizeGB: 1
