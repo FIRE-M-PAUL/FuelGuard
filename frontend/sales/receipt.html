@@ -7,6 +7,13 @@
     <title>Receipt #{{ sale['id'] }} — FuelGuard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="dashboard-body">
@@ -16,7 +23,10 @@
                 <h1>FuelGuard — Sale receipt</h1>
                 <div class="meta">Receipt #{{ sale['id'] }}</div>
             </div>
-            <a class="btn btn-secondary" href="{{ url_for('staff.sales_dashboard') }}">Back to dashboard</a>
+            <div class="no-print" style="display:flex; gap:8px;">
+                <button class="btn btn-primary" type="button" onclick="window.print()">Print receipt</button>
+                <a class="btn btn-secondary" href="{{ url_for('staff.sales_dashboard') }}">Back to dashboard</a>
+            </div>
         </header>
         <article class="panel">
             <table style="border:0;">
