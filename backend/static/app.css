@@ -1,6 +1,6 @@
 :root {
     --navy: #0c1536;
-    --purple: #6f3bd1;
+    --purple: #f37021;
     --cyan: #1fc7d4;
     --bg: #eef2fb;
     --panel: #ffffff;
@@ -43,7 +43,7 @@ a { color: var(--cyan); text-decoration: none; }
     display: grid;
     place-items: center;
     padding: clamp(16px, 4vw, 28px);
-    background: radial-gradient(circle at 18% 10%, rgba(111, 59, 209, 0.25), transparent 34%);
+    background: radial-gradient(circle at 18% 10%, rgba(243, 112, 33, 0.25), transparent 34%);
 }
 .auth-card {
     width: min(560px, 100%);
