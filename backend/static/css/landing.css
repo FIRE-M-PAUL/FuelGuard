@@ -2,7 +2,7 @@
     --bg-dark: #0c1330;
     --bg-soft: #f3f6fb;
     --primary: #182d68;
-    --secondary: #6f3bba;
+    --secondary: #0f9ec0;
     --accent: #19c3d2;
     --text-dark: #172033;
     --text-light: #f4f8ff;
@@ -72,13 +72,14 @@ body {
 }
 
 .brand-mark.brand-logo-img {
-    width: 44px;
-    height: 44px;
-    max-width: none;
+    width: auto;
+    max-width: min(200px, 42vw);
+    height: 48px;
+    max-height: 48px;
     border-radius: 0;
     display: block;
     object-fit: contain;
-    object-position: center;
+    object-position: left center;
     background: none;
     padding: 0;
     place-items: unset;
@@ -142,15 +143,22 @@ body {
 }
 
 .hero {
-    background: radial-gradient(circle at top left, #13255f 5%, #0c1330 45%, #121c40 100%);
+    position: relative;
+    overflow: hidden;
     color: var(--text-light);
+    min-height: min(72vh, 700px);
+    display: flex;
+    align-items: center;
+    padding: 88px 0 96px;
+    background:
+        linear-gradient(155deg, rgba(5, 12, 32, 0.92) 0%, rgba(8, 18, 48, 0.75) 38%, rgba(10, 20, 52, 0.88) 100%),
+        var(--hero-station-bg) center 42% / cover no-repeat #0c1330;
 }
 
-.hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 34px;
-    align-items: center;
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
 }
 
 .kicker {
@@ -184,26 +192,15 @@ h1 {
     margin-top: 20px;
 }
 
-.hero-media {
-    position: relative;
-}
-
-.hero-media img {
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.38);
-}
-
-.hero-badge {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
+.hero-pill {
+    display: inline-block;
     background: rgba(25, 195, 210, 0.93);
     color: #06212b;
     padding: 8px 12px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
+    margin: 0 0 16px;
 }
 
 .section-title {
@@ -341,7 +338,6 @@ h1 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .hero-grid,
     .about-grid,
     .footer-grid {
         grid-template-columns: 1fr;

@@ -1,0 +1,7 @@
+<script>
+    (function () {
+        var savedTheme = localStorage.getItem("fuelguard-theme");
+        var initialTheme = savedTheme === "dark" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", initialTheme);
+    })();
+</script>
