@@ -5,6 +5,8 @@
         href="{{ url_for('staff.manager_sales') }}">Sales Monitor</a>
     <a class="{{ 'active' if nav == 'stock' else '' }}"
         href="{{ url_for('staff.manager_stock') }}">Fuel Stock</a>
+    <a class="{{ 'active' if nav == 'fuel-levels' else '' }}"
+        href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
     <a class="{{ 'active' if nav == 'approvals' else '' }}"
         href="{{ url_for('staff.manager_approvals') }}">Approval Requests</a>
     <a class="{{ 'active' if nav == 'reports' else '' }}"

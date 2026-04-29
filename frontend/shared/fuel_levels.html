@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'shared/theme_init.html' %}
+    <title>Fuel Tank Level Monitoring Dashboard — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div><div class="side-meta">Fuel Monitoring</div></div>
+            </div>
+            {% if role == 'manager' %}
+                {% include 'shared/manager_nav.html' %}
+            {% elif role == 'accountant' %}
+                {% include 'shared/accountant_nav.html' %}
+            {% elif role == 'sales' %}
+                <nav class="side-links">
+                    <a href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
+                    <a href="{{ url_for('staff.sales_history') }}">Sales History</a>
+                    <a class="active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                    <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="side-link-btn">Logout</button>
+                    </form>
+                </nav>
+            {% else %}
+                <nav class="side-links">
+                    <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                    <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                    <a class="active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                    <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="side-link-btn">Logout</button>
+                    </form>
+                </nav>
+            {% endif %}
+            <div class="side-meta">{{ user['username'] }} · {{ role }}</div>
+        </aside>
+
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Fuel Tank Level Monitoring Dashboard</h1>
+                    <div class="meta">Visual tank status, consumption trend, and fuel endurance estimate</div>
+                </div>
+            </header>
+
+            {% if has_critical %}
+            <article class="panel fuel-alert-critical">
+                <h2>CRITICAL: Fuel level is low. Please schedule refueling.</h2>
+                <p class="muted" style="margin:0;">At least one fuel tank is below the critical threshold (&lt; 25% or below minimum threshold).</p>
+            </article>
+            {% endif %}
+
+            <section class="fuel-level-grid">
+                {% for level in levels %}
+                <article class="panel fuel-level-card">
+                    <h2>{{ level.fuel_type }}</h2>
+                    <div class="fuel-level-layout">
+                        <div class="fuel-tank-shell">
+                            <div class="fuel-tank">
+                                <div class="fuel-fill fuel-{{ level.status_color }}" style="height: {{ level.level_percentage }}%;">
+                                    <span>{{ '%.1f'|format(level.level_percentage) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fuel-level-details">
+                            <p><strong>Fuel Type:</strong> {{ level.fuel_type }}</p>
+                            <p><strong>Current Litres:</strong> {{ '%.2f'|format(level.current_level) }} L</p>
+                            <p><strong>Tank Capacity:</strong> {{ '%.2f'|format(level.tank_capacity) }} L</p>
+                            <p><strong>Fuel Status:</strong> <span class="status-pill fuel-status-pill fuel-{{ level.status_color }}">{{ level.status }}</span></p>
+                            <p><strong>7-Day Avg Daily Consumption:</strong> {{ '%.2f'|format(level.avg_daily_consumption) }} L/day</p>
+                            <p>
+                                <strong>Estimated Days Remaining:</strong>
+                                {% if level.estimated_days_remaining is not none %}
+                                    {{ '%.1f'|format(level.estimated_days_remaining) }} Days
+                                {% else %}
+                                    N/A (insufficient sales data)
+                                {% endif %}
+                            </p>
+                            <p><strong>Minimum Threshold:</strong> {{ '%.2f'|format(level.minimum_threshold) }} L</p>
+                            <p class="muted" style="margin-bottom:0;"><strong>Last Updated:</strong> {{ level.last_updated }}</p>
+                        </div>
+                    </div>
+                </article>
+                {% else %}
+                <article class="panel">
+                    <p class="muted">No fuel stock rows available yet.</p>
+                </article>
+                {% endfor %}
+            </section>
+
+            <article class="panel">
+                <h2>Access Profile</h2>
+                <p class="muted">This screen is read-only for sales and accounting users; stock quantities update automatically from sales and fuel purchase transactions.</p>
+                <div class="timeline">
+                    <div class="timeline-item">Manager: Monitor trends, act on low fuel alerts{% if can_approve_deliveries %}, and approve deliveries{% endif %}.</div>
+                    <div class="timeline-item">Salesperson: View fuel availability only.</div>
+                    <div class="timeline-item">Accountant: View levels for reporting and reconciliation.</div>
+                    {% if can_configure_thresholds %}
+                    <div class="timeline-item">Admin: Full monitoring visibility with threshold configuration authority.</div>
+                    {% endif %}
+                </div>
+            </article>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+</body>
+</html>

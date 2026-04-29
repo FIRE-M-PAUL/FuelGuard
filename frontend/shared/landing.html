@@ -5,123 +5,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include 'shared/theme_init.html' %}
-    <title>FuelGuard - Smart Fuel Monitoring System</title>
+    <title>FuelGuard Smart Fuel Monitoring System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
 </head>
 
 <body>
-    <header class="navbar" id="home">
+    <header class="navbar reveal" id="home">
         <div class="container nav-inner">
-            <a class="brand" href="#home">
-                <img class="brand-mark brand-logo-img" src="{{ url_for('static', filename='images/fuelguard_logo.png') }}"
-                    alt="FuelGuard — secure. monitor. protect." decoding="async">
+            <a class="brand" href="#home" aria-label="FuelGuard home">
+                <img class="brand-logo-img" src="{{ url_for('static', filename='images/fuelguard_logo.png') }}"
+                    alt="FuelGuard" decoding="async">
             </a>
-            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">&#9776;</button>
-            <nav class="nav-links" id="navLinks">
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation menu">&#9776;</button>
+            <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
                 <a href="#home">Home</a>
                 <a href="#features">Features</a>
-                <a href="#about">About</a>
+                <a href="#about">About Us</a>
                 <a href="#contact">Contact</a>
-                <a class="btn btn-ghost" href="{{ url_for('staff.login') }}">Login</a>
-                <a class="btn btn-primary" href="{{ url_for('staff.register_page') }}">Create Account</a>
+                <a class="btn btn-login" href="{{ url_for('staff.login') }}">Login</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <section class="hero section"
+        <section class="hero"
             style="--hero-station-bg: url('{{ url_for('static', filename='images/landing-hero-fuelguard.png') }}');">
             <div class="container hero-content">
                 <div class="hero-copy reveal">
-                    <p class="kicker">Fuel Operations Intelligence</p>
-                    <p class="hero-pill">Real-Time Fuel Visibility</p>
-                    <h1>FuelGuard - Smart Fuel Monitoring System</h1>
-                    <p class="subtitle">
-                        Track, monitor, and manage fuel operations securely and efficiently.
-                    </p>
+                    <h1>
+                        <span class="hero-title-primary">Smart Fuel<br>Management</span>
+                        <span class="hero-title-accent">Made Simple</span>
+                    </h1>
                     <p class="description">
-                        FuelGuard helps organizations control fuel usage, prevent fraud, and generate accurate fuel
-                        reports in real time.
+                        FuelGuard helps you monitor fuel levels, track sales, prevent losses, and grow your business
+                        with real time intelligence.
                     </p>
                     <div class="hero-actions">
-                        <a class="btn btn-primary" href="{{ url_for('staff.login') }}">Get Started</a>
-                        <a class="btn btn-secondary" href="#about">Learn More</a>
+                        <a class="btn btn-primary" href="{{ url_for('staff.login') }}">Get Started <span aria-hidden="true"> →</span></a>
+                        <a class="btn btn-secondary" href="#features">Learn More <span aria-hidden="true"> →</span></a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="section" id="features">
-            <div class="container">
-                <h2 class="section-title">Core Features</h2>
-                <p class="section-text">Everything your team needs to monitor fuel operations with confidence.</p>
-                <div class="feature-grid">
-                    <article class="card reveal">
-                        <div class="icon">⛽</div>
-                        <h3>Fuel Tracking</h3>
-                        <p>Track fuel usage across vehicles, stations, and departments with precise records.</p>
-                    </article>
-                    <article class="card reveal">
-                        <div class="icon">📡</div>
-                        <h3>Real-Time Monitoring</h3>
-                        <p>Monitor transactions and consumption live to detect anomalies before they escalate.</p>
-                    </article>
-                    <article class="card reveal">
-                        <div class="icon">🛡️</div>
-                        <h3>Fraud Prevention</h3>
-                        <p>Use approval workflows and role controls to reduce unauthorized fuel activity.</p>
-                    </article>
-                    <article class="card reveal">
-                        <div class="icon">📊</div>
-                        <h3>Report Generation</h3>
-                        <p>Generate actionable reports for audits, budgeting, and operational decision-making.</p>
-                    </article>
-                </div>
+        <section class="features-wrap section" id="features">
+            <div class="container feature-grid">
+                <article class="feature-card reveal">
+                    <div class="feature-icon" aria-hidden="true">📈</div>
+                    <h3>Real-Time Monitoring</h3>
+                    <p>Track fuel levels and sales in real time.</p>
+                </article>
+                <article class="feature-card reveal">
+                    <div class="feature-icon" aria-hidden="true">🛡️</div>
+                    <h3>Secure &amp; Reliable</h3>
+                    <p>Protect your data and prevent fraud.</p>
+                </article>
+                <article class="feature-card reveal">
+                    <div class="feature-icon" aria-hidden="true">🧾</div>
+                    <h3>Smart Reporting</h3>
+                    <p>Generate accurate reports in seconds.</p>
+                </article>
+                <article class="feature-card reveal">
+                    <div class="feature-icon" aria-hidden="true">👥</div>
+                    <h3>User Friendly</h3>
+                    <p>Easy to use for your entire team.</p>
+                </article>
             </div>
         </section>
 
         <section class="section about" id="about">
             <div class="container about-grid">
                 <div class="reveal">
-                    <h2 class="section-title">About FuelGuard</h2>
+                    <h2 class="section-title">Built for Smarter Fuel Operations</h2>
                     <p class="section-text">
-                        FuelGuard is a secure fuel management system designed to help organizations monitor fuel usage,
-                        reduce fuel theft, and improve operational efficiency.
+                        FuelGuard combines monitoring, sales tracking, and reporting into one platform so teams can run
+                        efficient fuel station operations with confidence.
                     </p>
                     <ul class="about-list">
-                        <li>Fuel tracking</li>
-                        <li>Transaction monitoring</li>
-                        <li>Approval workflows</li>
-                        <li>Reporting tools</li>
+                        <li>Real-time stock visibility</li>
+                        <li>Secure role-based access</li>
+                        <li>Fast reporting for managers</li>
+                        <li>Reliable daily workflows</li>
                     </ul>
                 </div>
                 <div class="about-media reveal">
                     <img src="{{ url_for('static', filename='images/landing-hero-fuelguard.png') }}"
-                        alt="FuelGuard service station and fueling canopy" loading="lazy" decoding="async">
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="container">
-                <h2 class="section-title">System Benefits</h2>
-                <div class="benefit-grid">
-                    <div class="benefit reveal"><span>🔒</span>Reduce fuel fraud</div>
-                    <div class="benefit reveal"><span>✅</span>Improve fuel accountability</div>
-                    <div class="benefit reveal"><span>📈</span>Monitor fuel usage</div>
-                    <div class="benefit reveal"><span>🧾</span>Generate accurate reports</div>
-                    <div class="benefit reveal"><span>💰</span>Save operational costs</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section cta">
-            <div class="container cta-box reveal">
-                <h2>Ready to manage your fuel operations?</h2>
-                <div class="hero-actions">
-                    <a class="btn btn-primary" href="{{ url_for('staff.login') }}">Login</a>
-                    <a class="btn btn-secondary" href="{{ url_for('staff.register_page') }}">Create Account</a>
+                        alt="FuelGuard station overview" loading="lazy" decoding="async">
                 </div>
             </div>
         </section>
@@ -137,7 +107,7 @@
                 <h4>Quick Links</h4>
                 <a href="#home">Home</a>
                 <a href="#features">Features</a>
-                <a href="#about">About</a>
+                <a href="#about">About Us</a>
                 <a href="#contact">Contact</a>
             </div>
             <div>

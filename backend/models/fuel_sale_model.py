@@ -11,6 +11,7 @@ ALLOWED_FUEL_TYPES = frozenset({"Petrol", "Diesel"})
 ALLOWED_PAYMENT_METHODS = frozenset({"Cash", "Mobile Money", "Card"})
 DEFAULT_STOCK_LITRES = 10_000.0
 DEFAULT_MINIMUM_LITRES = 1_200.0
+DEFAULT_TANK_CAPACITY_LITRES = 10_000.0
 DEFAULT_RETAIL_PRICE_PER_LITRE = 2.50
 
 
@@ -32,6 +33,35 @@ def _migrate_fuel_stock_selling_price(db: sqlite3.Connection) -> None:
             ALTER TABLE fuel_stock ADD COLUMN selling_price_per_litre REAL NOT NULL DEFAULT {DEFAULT_RETAIL_PRICE_PER_LITRE}
             """
         )
+
+
+def _migrate_fuel_stock_monitoring_columns(db: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in db.execute("PRAGMA table_info(fuel_stock)").fetchall()}
+    if "tank_capacity" not in cols:
+        db.execute(
+            f"""
+            ALTER TABLE fuel_stock ADD COLUMN tank_capacity REAL NOT NULL DEFAULT {DEFAULT_TANK_CAPACITY_LITRES}
+            """
+        )
+    if "minimum_threshold" not in cols:
+        db.execute(
+            f"""
+            ALTER TABLE fuel_stock ADD COLUMN minimum_threshold REAL NOT NULL DEFAULT {DEFAULT_MINIMUM_LITRES}
+            """
+        )
+    # Keep legacy minimum_level in sync for older pages that still read it.
+    db.execute(
+        """
+        UPDATE fuel_stock
+        SET minimum_threshold = COALESCE(minimum_threshold, minimum_level, ?),
+            minimum_level = COALESCE(minimum_level, minimum_threshold, ?),
+            tank_capacity = CASE
+                WHEN tank_capacity IS NULL OR tank_capacity <= 0 THEN ?
+                ELSE tank_capacity
+            END
+        """,
+        (DEFAULT_MINIMUM_LITRES, DEFAULT_MINIMUM_LITRES, DEFAULT_TANK_CAPACITY_LITRES),
+    )
 
 
 def init_db() -> None:
@@ -78,6 +108,7 @@ def init_db() -> None:
         )
     _migrate_fuel_stock_minimum(db)
     _migrate_fuel_stock_selling_price(db)
+    _migrate_fuel_stock_monitoring_columns(db)
     db.commit()
 
 
@@ -154,6 +185,70 @@ def list_stock_for_manager() -> list[dict[str, Any]]:
             }
         )
     return out
+
+
+def fuel_levels_monitoring_snapshot() -> list[dict[str, Any]]:
+    """Fuel level and 7-day burn-rate estimates for dashboard visualisation."""
+    db = get_db()
+    rows = db.execute(
+        """
+        SELECT
+            fs.id AS fuel_id,
+            fs.fuel_type,
+            fs.available_litres AS current_level,
+            COALESCE(fs.tank_capacity, ?) AS tank_capacity,
+            COALESCE(fs.minimum_threshold, fs.minimum_level, ?) AS minimum_threshold,
+            fs.last_updated,
+            COALESCE((
+                SELECT SUM(s.quantity)
+                FROM fuel_sales s
+                WHERE s.fuel_type = fs.fuel_type
+                AND date(s.sale_date) >= date('now', '-6 day')
+            ), 0) AS total_7d_consumption
+        FROM fuel_stock fs
+        ORDER BY fs.fuel_type COLLATE NOCASE
+        """,
+        (DEFAULT_TANK_CAPACITY_LITRES, DEFAULT_MINIMUM_LITRES),
+    ).fetchall()
+
+    output: list[dict[str, Any]] = []
+    for row in rows:
+        current_level = float(row["current_level"] or 0)
+        tank_capacity = float(row["tank_capacity"] or 0)
+        minimum_threshold = float(row["minimum_threshold"] or DEFAULT_MINIMUM_LITRES)
+        safe_capacity = tank_capacity if tank_capacity > 0 else DEFAULT_TANK_CAPACITY_LITRES
+        level_pct = (current_level / safe_capacity) * 100 if safe_capacity > 0 else 0.0
+
+        if level_pct > 50:
+            status = "Good"
+            color = "green"
+        elif level_pct >= 25:
+            status = "Monitor"
+            color = "yellow"
+        else:
+            status = "Critical"
+            color = "red"
+
+        avg_daily = float(row["total_7d_consumption"] or 0.0) / 7.0
+        days_remaining = round(current_level / avg_daily, 1) if avg_daily > 0 else None
+
+        output.append(
+            {
+                "fuel_id": int(row["fuel_id"]),
+                "fuel_type": str(row["fuel_type"]),
+                "current_level": round(current_level, 2),
+                "tank_capacity": round(safe_capacity, 2),
+                "minimum_threshold": round(minimum_threshold, 2),
+                "last_updated": row["last_updated"],
+                "level_percentage": round(max(0.0, min(level_pct, 100.0)), 1),
+                "status": status,
+                "status_color": color,
+                "avg_daily_consumption": round(avg_daily, 2),
+                "estimated_days_remaining": days_remaining,
+                "critical_alert": level_pct < 25 or current_level <= minimum_threshold,
+            }
+        )
+    return output
 
 
 def retail_sales_summary_today() -> tuple[float, int]:

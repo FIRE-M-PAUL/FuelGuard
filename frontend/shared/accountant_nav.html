@@ -7,6 +7,8 @@
         href="{{ url_for('staff.accountant_expenses') }}">Expenses</a>
     <a class="{{ 'active' if nav == 'purchases' else '' }}"
         href="{{ url_for('staff.accountant_purchases') }}">Fuel Purchases</a>
+    <a class="{{ 'active' if nav == 'fuel-levels' else '' }}"
+        href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
     <a class="{{ 'active' if nav == 'reports' else '' }}"
         href="{{ url_for('staff.accountant_reports') }}">Reports</a>
     <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">

@@ -12,7 +12,7 @@ from backend.routes.auth_routes import staff_bp
 from backend.security.rbac import Permission, require_permissions
 from backend.services import audit_service
 from backend.services.logging_service import log_event
-from backend.security.session_manager import staff_login_required
+from backend.security.session_manager import role_required, staff_login_required
 
 
 @staff_bp.route("/manager/dashboard")
@@ -28,6 +28,38 @@ def manager_dashboard():
         ops=ops,
         nav="dashboard",
     )
+
+
+@staff_bp.get("/fuel-levels")
+@staff_login_required
+@role_required("manager", "sales", "accountant", "admin")
+def fuel_levels_dashboard():
+    user = user_model.get_user_by_id(int(session["user_id"]))
+    role = (session.get("role") or "").lower()
+    levels = fuel_sale_model.fuel_levels_monitoring_snapshot()
+    has_critical = any(item["critical_alert"] for item in levels)
+    return render_template(
+        "shared/fuel_levels.html",
+        user=user,
+        role=role,
+        nav="fuel-levels",
+        levels=levels,
+        has_critical=has_critical,
+        can_approve_deliveries=role in {"manager", "admin"},
+        can_configure_thresholds=role == "admin",
+    )
+
+
+@staff_bp.get("/api/fuel-levels")
+@staff_login_required
+@role_required("manager", "sales", "accountant", "admin")
+def fuel_levels_api():
+    levels = fuel_sale_model.fuel_levels_monitoring_snapshot()
+    return {
+        "ok": True,
+        "levels": levels,
+        "has_critical": any(item["critical_alert"] for item in levels),
+    }
 
 
 @staff_bp.route("/manager/sales", methods=["GET"])
