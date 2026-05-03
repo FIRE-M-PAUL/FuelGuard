@@ -7,7 +7,14 @@ from datetime import UTC, datetime
 
 from flask import Response, flash, redirect, render_template, request, session, url_for
 
-from backend.models import accounting_model, fuel_sale_model, manager_ops_model, user_model
+from backend.models import (
+    accounting_model,
+    fuel_adjustment_request_model,
+    fuel_sale_model,
+    manager_ops_model,
+    station_model,
+    user_model,
+)
 from backend.routes.auth_routes import staff_bp
 from backend.security.rbac import Permission, require_permissions
 from backend.services import audit_service
@@ -38,6 +45,12 @@ def fuel_levels_dashboard():
     role = (session.get("role") or "").lower()
     levels = fuel_sale_model.fuel_levels_monitoring_snapshot()
     has_critical = any(item["critical_alert"] for item in levels)
+    can_request_adjustment = role == "manager"
+    my_adjustment_requests: list = []
+    if can_request_adjustment:
+        my_adjustment_requests = fuel_adjustment_request_model.list_for_manager(
+            int(session["user_id"]), limit=15
+        )
     return render_template(
         "shared/fuel_levels.html",
         user=user,
@@ -45,8 +58,10 @@ def fuel_levels_dashboard():
         nav="fuel-levels",
         levels=levels,
         has_critical=has_critical,
-        can_approve_deliveries=role in {"manager", "admin"},
         can_configure_thresholds=role == "admin",
+        can_request_adjustment=can_request_adjustment,
+        recent_adjustments=fuel_sale_model.list_recent_fuel_adjustments(limit=12),
+        my_adjustment_requests=my_adjustment_requests,
     )
 
 
@@ -96,6 +111,29 @@ def manager_sales():
     )
 
 
+@staff_bp.route("/manager/shifts", methods=["GET"])
+@staff_login_required
+@require_permissions(Permission.MANAGER_PORTAL)
+def manager_shifts():
+    """Overview of all staff shifts: start details, status, and sales summary while open/closed."""
+    user = user_model.get_user_by_id(int(session["user_id"]))
+    rows = station_model.list_recent_shifts_with_staff(limit=120)
+    shift_rows: list[dict] = []
+    for sh in rows:
+        d = dict(sh)
+        d["summary"] = station_model.shift_sales_summary(int(sh["id"]))
+        shift_rows.append(d)
+    open_count = sum(1 for r in shift_rows if (r.get("status") or "").lower() == "open")
+    return render_template(
+        "manager/shifts.html",
+        user=user,
+        role=session.get("role"),
+        nav="shifts",
+        shifts=shift_rows,
+        open_shift_count=open_count,
+    )
+
+
 @staff_bp.route("/manager/reports", methods=["GET"])
 @staff_login_required
 @require_permissions(Permission.MANAGER_PORTAL)
@@ -106,7 +144,7 @@ def manager_reports():
         "manager/reports.html",
         user=user,
         role=session.get("role"),
-        nav="reports",
+        nav="reports-classic",
         today=today,
     )
 
@@ -222,6 +260,7 @@ def accountant_verify_payment(sale_id: int):
 def accountant_expenses():
     user = user_model.get_user_by_id(int(session["user_id"]))
     if request.method == "POST":
+        expense_name = (request.form.get("expense_name") or "").strip()
         description = (request.form.get("description") or "").strip()
         category = (request.form.get("category") or "Other").strip()
         date_str = (request.form.get("date") or "").strip()
@@ -241,6 +280,7 @@ def accountant_expenses():
         if not date_str:
             date_str = datetime.now(UTC).strftime("%Y-%m-%d")
         eid = accounting_model.add_expense(
+            expense_name=expense_name or None,
             description=description,
             amount=amount,
             category=category,
@@ -250,13 +290,28 @@ def accountant_expenses():
         log_event(f"Expense recorded id={eid} accountant_id={session['user_id']}")
         flash("Expense recorded.", "success")
         return redirect(url_for("staff.accountant_expenses"))
-    expenses = accounting_model.list_expenses()
+    df = (request.args.get("from") or "").strip() or None
+    dt = (request.args.get("to") or "").strip() or None
+    cat = (request.args.get("category") or "").strip() or None
+    if cat and cat not in accounting_model.EXPENSE_CATEGORIES:
+        cat = None
+    expenses = accounting_model.list_expenses_filtered(
+        date_from=df, date_to=dt, category=cat, limit=500
+    )
+    total_filtered = accounting_model.total_expenses_filtered(
+        date_from=df, date_to=dt, category=cat
+    )
     return render_template(
         "accountant/expenses.html",
         user=user,
         role=session.get("role"),
         expenses=expenses,
         nav="expenses",
+        filter_from=df or "",
+        filter_to=dt or "",
+        filter_category=cat or "",
+        total_filtered=total_filtered,
+        categories=sorted(accounting_model.EXPENSE_CATEGORIES),
     )
 
 
@@ -347,7 +402,7 @@ def accountant_reports():
         "accountant/financial_reports.html",
         user=user,
         role=session.get("role"),
-        nav="reports",
+        nav="reports-classic",
         today=today,
     )
 

@@ -34,6 +34,16 @@
                 </form>
             </header>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
             {% if ops.low_fuel_alert %}
             <article class="panel"
                 style="border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.08); margin-bottom: 14px;">
@@ -49,7 +59,7 @@
             </article>
             {% endif %}
 
-            <section class="metrics">
+            <section class="metrics" style="margin-bottom:14px;">
                 <article class="metric">
                     <div class="k">Fuel sold today (L)</div>
                     <div class="v">{{ '%.2f'|format(ops.litres_sold_today) }}</div>
@@ -57,10 +67,6 @@
                 <article class="metric">
                     <div class="k">Sales transactions today</div>
                     <div class="v">{{ ops.sales_transactions_today }}</div>
-                </article>
-                <article class="metric">
-                    <div class="k">Pending approvals</div>
-                    <div class="v">{{ ops.pending_approvals }}</div>
                 </article>
                 <article class="metric">
                     <div class="k">Low fuel alerts</div>
@@ -76,7 +82,7 @@
                 </article>
             </section>
 
-            <section class="dash-grid" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+            <section class="dash-grid" style="grid-template-columns: 1fr; margin-top: 4px;">
                 <article class="panel">
                     <h2>Current stock</h2>
                     <div class="table-wrap">
@@ -115,42 +121,6 @@
                             </tbody>
                         </table>
                     </div>
-                </article>
-                <article class="panel">
-                    <h2>Approval queue</h2>
-                    <p class="muted" style="margin-top:0;">Supervise fuel allocation and operational submissions.</p>
-                    <p style="font-size:1.15rem; margin:8px 0 12px;"><strong>{{ ops.pending_approvals }}</strong> <span
-                            class="muted">pending</span></p>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Type</th>
-                                    <th>Summary</th>
-                                    <th>By</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for r in ops.pending_preview %}
-                                <tr>
-                                    <td>#{{ r['id'] }}</td>
-                                    <td>{{ r['request_type'] }}</td>
-                                    <td>{{ r['description'].split('|', 1)[-1][:48] }}{% if r['description']|length > 48 %}…{% endif %}</td>
-                                    <td>{{ r['requested_by_username'] }}</td>
-                                    <td>{{ r['request_date'] }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="5" class="muted">No pending requests.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <a class="btn btn-primary" style="margin-top:10px;display:inline-block;"
-                        href="{{ url_for('staff.manager_approvals') }}">Open full queue</a>
                 </article>
             </section>
 

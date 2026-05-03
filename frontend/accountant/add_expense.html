@@ -50,6 +50,10 @@
                 <form method="post" action="{{ url_for('staff.accountant_expenses') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="field">
+                        <label for="expense_name">Expense name</label>
+                        <input id="expense_name" name="expense_name" type="text" maxlength="200" placeholder="Short title (optional)">
+                    </div>
+                    <div class="field">
                         <label for="description">Expense description</label>
                         <input id="description" name="description" type="text" required maxlength="500">
                     </div>

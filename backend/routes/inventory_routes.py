@@ -1,4 +1,4 @@
-"""Fuel inventory API, stock views, and operational approvals."""
+"""Fuel inventory API, stock views, and manager stock UI."""
 from __future__ import annotations
 
 import csv
@@ -6,7 +6,7 @@ import io
 
 from flask import Blueprint, Response, flash, jsonify, redirect, render_template, request, session, url_for
 
-from backend.models import approval_request_model, fuel_model, fuel_sale_model, user_model
+from backend.models import fuel_model, fuel_sale_model, user_model
 from backend.routes.auth_routes import staff_bp
 from backend.security.rbac import Permission, require_permissions
 from backend.services.logging_service import log_event
@@ -62,11 +62,6 @@ def review_record(record_id: int):
         status=status,
         reviewed_by=int(session["user_id"]),
         review_note=note,
-    )
-    approval_request_model.sync_decision_for_fuel_record(
-        record_id,
-        manager_id=int(session["user_id"]),
-        approved=(status == "approved"),
     )
     log_event(
         f"Fuel record reviewed record_id={record_id} status={status} "
@@ -130,85 +125,6 @@ def export_report():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment; filename=fuel_report.csv"},
     )
-
-
-@staff_bp.route("/manager/approvals", methods=["GET"])
-@staff_login_required
-@require_permissions(Permission.MANAGER_PORTAL)
-def manager_approvals():
-    user = user_model.get_user_by_id(int(session["user_id"]))
-    requests_rows = approval_request_model.list_requests(limit=300)
-    return render_template(
-        "manager/approvals.html",
-        user=user,
-        role=session.get("role"),
-        requests=requests_rows,
-        nav="approvals",
-    )
-
-
-@staff_bp.post("/manager/approve/<int:request_id>")
-@staff_login_required
-@require_permissions(Permission.MANAGER_PORTAL)
-def manager_approve_request(request_id: int):
-    ok, err = approval_request_model.set_decision(
-        request_id,
-        new_status=approval_request_model.STATUS_APPROVED,
-        manager_id=int(session["user_id"]),
-    )
-    if not ok:
-        flash(err or "Could not approve this request.", "error")
-        return redirect(url_for("staff.manager_approvals"))
-    row = approval_request_model.get_by_id(request_id)
-    if row:
-        fid = approval_request_model.linked_fuel_record_id(row["description"])
-        if fid is not None:
-            fr = fuel_model.get_fuel_record(fid)
-            if fr and (fr["status"] or "").lower() == "pending":
-                fuel_model.update_fuel_status(
-                    fid,
-                    status="approved",
-                    reviewed_by=int(session["user_id"]),
-                    review_note=None,
-                )
-    log_event(
-        f"Manager approved operational request request_id={request_id} "
-        f"manager_id={session['user_id']}"
-    )
-    flash("Request approved.", "success")
-    return redirect(url_for("staff.manager_approvals"))
-
-
-@staff_bp.post("/manager/reject/<int:request_id>")
-@staff_login_required
-@require_permissions(Permission.MANAGER_PORTAL)
-def manager_reject_request(request_id: int):
-    ok, err = approval_request_model.set_decision(
-        request_id,
-        new_status=approval_request_model.STATUS_REJECTED,
-        manager_id=int(session["user_id"]),
-    )
-    if not ok:
-        flash(err or "Could not reject this request.", "error")
-        return redirect(url_for("staff.manager_approvals"))
-    row = approval_request_model.get_by_id(request_id)
-    if row:
-        fid = approval_request_model.linked_fuel_record_id(row["description"])
-        if fid is not None:
-            fr = fuel_model.get_fuel_record(fid)
-            if fr and (fr["status"] or "").lower() == "pending":
-                fuel_model.update_fuel_status(
-                    fid,
-                    status="rejected",
-                    reviewed_by=int(session["user_id"]),
-                    review_note=None,
-                )
-    log_event(
-        f"Manager rejected operational request request_id={request_id} "
-        f"manager_id={session['user_id']}"
-    )
-    flash("Request rejected.", "success")
-    return redirect(url_for("staff.manager_approvals"))
 
 
 @staff_bp.route("/manager/stock", methods=["GET"])

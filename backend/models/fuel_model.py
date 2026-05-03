@@ -71,14 +71,6 @@ def create_fuel_record(payload: dict[str, Any], submitted_by: int) -> int:
     )
     record_id = int(cur.lastrowid)
     db.commit()
-    from backend.models import approval_request_model
-
-    approval_request_model.create_for_fuel_record(
-        record_id=record_id,
-        submitted_by=submitted_by,
-        vehicle_id=str(payload["vehicle_id"]),
-        driver_name=str(payload["driver_name"]),
-    )
     return record_id
 
 

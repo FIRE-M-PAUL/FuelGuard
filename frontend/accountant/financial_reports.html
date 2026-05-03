@@ -89,6 +89,19 @@
                         <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
                     </form>
                 </article>
+
+                <article class="panel">
+                    <h2>Shift report</h2>
+                    <p class="muted">Cashier shifts with per-shift litres, revenue, and transaction counts.</p>
+                    <form method="get" action="{{ url_for('staff.export_shifts_csv') }}" class="inline-form"
+                        style="flex-direction:column;align-items:stretch;">
+                        <label class="muted" for="acct-shift-from" style="font-size:12px;">From</label>
+                        <input id="acct-shift-from" name="from" type="date" value="{{ today }}" required>
+                        <label class="muted" for="acct-shift-to" style="font-size:12px;">To</label>
+                        <input id="acct-shift-to" name="to" type="date" value="{{ today }}" required>
+                        <button class="btn btn-primary" type="submit" style="margin-top:8px;">Download CSV</button>
+                    </form>
+                </article>
             </section>
         </main>
     </div>

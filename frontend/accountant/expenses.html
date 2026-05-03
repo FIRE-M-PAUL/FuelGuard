@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,15 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-
 <body class="dashboard-body">
     <div class="dash-shell">
         <aside class="dash-side">
             <div class="side-brand">
                 {% include 'shared/brand_logo.html' %}
-                <div>
-                    <div class="side-meta">Finance &amp; Compliance</div>
-                </div>
+                <div><div class="side-meta">Finance &amp; Compliance</div></div>
             </div>
             {% include 'shared/accountant_nav.html' %}
             <div class="side-meta">{{ user['email'] or '—' }}</div>
@@ -25,10 +21,10 @@
         <main class="dash-content">
             <header class="dash-top">
                 <div class="title-group">
-                    <h1>Expenses</h1>
+                    <h1>Expense management</h1>
                     <div class="meta">{{ user['username'] }} · {{ role }}</div>
                 </div>
-                <div style="display:flex;gap:10px;align-items:center;">
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
                     <a class="btn btn-primary" href="{{ url_for('staff.accountant_expenses_add') }}">Add expense</a>
                     <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -47,33 +43,71 @@
             {% endif %}
             {% endwith %}
 
+            <article class="panel" style="margin-bottom:14px;">
+                <h2 style="margin-top:0;">Filters</h2>
+                <form method="get" action="{{ url_for('staff.accountant_expenses') }}" class="dash-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:end;gap:12px;">
+                    <div class="field" style="margin:0;">
+                        <label for="f_from">From</label>
+                        <input id="f_from" name="from" type="date" value="{{ filter_from }}">
+                    </div>
+                    <div class="field" style="margin:0;">
+                        <label for="f_to">To</label>
+                        <input id="f_to" name="to" type="date" value="{{ filter_to }}">
+                    </div>
+                    <div class="field" style="margin:0;">
+                        <label for="f_cat">Category</label>
+                        <select id="f_cat" name="category">
+                            <option value="">All</option>
+                            {% for c in categories %}
+                            <option value="{{ c }}" {% if filter_category == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-primary" type="submit">Apply</button>
+                        <a class="btn btn-secondary" href="{{ url_for('staff.accountant_expenses') }}">Clear</a>
+                    </div>
+                </form>
+                <p class="muted" style="margin-bottom:0;">Total for filter: <strong>K{{ '%.2f'|format(total_filtered) }}</strong></p>
+            </article>
+
             <article class="panel">
-                <h2>Recorded expenses</h2>
+                <h2>Expense history</h2>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Name</th>
                                 <th>Description</th>
                                 <th>Category</th>
                                 <th>Amount</th>
                                 <th>Date</th>
-                                <th>Recorded by</th>
+                                <th>By</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for e in expenses %}
                             <tr>
                                 <td>#{{ e['id'] }}</td>
+                                <td>{{ (e['expense_name'] or e['description']) }}</td>
                                 <td>{{ e['description'] }}</td>
                                 <td>{{ e['category'] }}</td>
                                 <td>K{{ '%.2f'|format(e['amount']) }}</td>
                                 <td>{{ e['date'] }}</td>
                                 <td>{{ e['recorded_by_username'] }}</td>
+                                <td>
+                                    <a class="btn btn-small btn-secondary" href="{{ url_for('staff.accountant_expense_edit', expense_id=e['id']) }}">Edit</a>
+                                    <form method="post" action="{{ url_for('staff.accountant_expense_delete', expense_id=e['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this expense?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="6" class="muted">No expenses yet.</td>
+                                <td colspan="8" class="muted">No expenses match this filter.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -84,5 +118,4 @@
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
 </body>
-
 </html>

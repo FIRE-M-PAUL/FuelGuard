@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'shared/theme_init.html' %}
+    <title>Analytics — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div><div class="side-meta">Analytics</div></div>
+            </div>
+            {% if role == 'manager' %}{% include 'shared/manager_nav.html' %}
+            {% else %}{% include 'shared/accountant_nav.html' %}{% endif %}
+            <div class="side-meta">{{ user['username'] }} · {{ role }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Station analytics</h1>
+                    <div class="meta">As of {{ data.as_of }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            {% if alerts %}
+            <article class="panel" style="margin-bottom:14px;">
+                <h2 style="margin-top:0;">Notifications</h2>
+                <ul class="flash-list" style="margin:0;">
+                    {% for a in alerts %}
+                    <li class="{{ 'error' if a['severity'] in ('error','critical') else '' }}">
+                        <strong>{{ a['alert_type'] }}</strong> — {{ a['message'] }}
+                        <form method="post" action="{{ url_for('staff.acknowledge_alert_route', alert_id=a['id']) }}" style="display:inline;margin-left:8px;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="next" value="{{ url_for('staff.station_analytics') }}">
+                            <button type="submit" class="btn btn-small btn-secondary">Dismiss</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </article>
+            {% endif %}
+
+            <section class="metrics">
+                <article class="metric"><div class="k">Sales today</div><div class="v">{{ data.sales_count_today }}</div></article>
+                <article class="metric"><div class="k">Revenue today</div><div class="v">K{{ '%.2f'|format(data.revenue_today) }}</div></article>
+                <article class="metric"><div class="k">Fuel sold today (L)</div><div class="v">{{ '%.2f'|format(data.litres_sold_today) }}</div></article>
+                <article class="metric"><div class="k">Expenses today</div><div class="v">K{{ '%.2f'|format(data.expenses_today) }}</div></article>
+                <article class="metric"><div class="k">Net today</div><div class="v" style="color:{% if data.profit_today >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.profit_today) }}</div></article>
+                <article class="metric"><div class="k">Net (incl. fuel purchases) today</div><div class="v" style="color:{% if data.net_after_purchases_today >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.net_after_purchases_today) }}</div></article>
+            </section>
+
+            {% if data.low_fuel_warning %}
+            <article class="panel fuel-alert-critical"><h2 style="margin-top:0;">LOW FUEL WARNING</h2>
+                <ul style="margin:0;padding-left:1.2rem;">
+                    {% for s in data.low_fuel_rows %}<li><strong>{{ s.fuel_type }}</strong> — {{ '%.0f'|format(s.available_litres) }} L (min {{ '%.0f'|format(s.minimum_level) }})</li>{% endfor %}
+                </ul>
+            </article>
+            {% endif %}
+
+            <section class="metrics" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+                <article class="metric"><div class="k">Monthly net (sales − expenses)</div><div class="v" style="color:{% if data.monthly_profit >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.monthly_profit) }}</div></article>
+                <article class="metric"><div class="k">Monthly net (incl. purchases)</div><div class="v" style="color:{% if data.net_after_purchases_month >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.net_after_purchases_month) }}</div></article>
+                <article class="metric"><div class="k">Top fuel (this month)</div><div class="v">{{ data.top_fuel_type or '—' }} · {{ '%.0f'|format(data.top_fuel_litres) }} L</div></article>
+            </section>
+
+            <section class="dash-grid" style="margin-top:14px;">
+                <article class="panel">
+                    <h2>Monthly revenue trend</h2>
+                    <canvas id="chartRev" height="120"></canvas>
+                </article>
+                <article class="panel">
+                    <h2>Daily sales (14 days)</h2>
+                    <canvas id="chartDaily" height="120"></canvas>
+                </article>
+            </section>
+            <section class="dash-grid" style="margin-top:14px;">
+                <article class="panel">
+                    <h2>Fuel distribution (this month)</h2>
+                    <canvas id="chartPie" height="200"></canvas>
+                </article>
+                <article class="panel">
+                    <h2>Stock levels</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Fuel</th><th>Available (L)</th><th>Min</th><th>Status</th></tr></thead>
+                            <tbody>
+                                {% for s in data.stock_rows %}
+                                <tr>
+                                    <td>{{ s.fuel_type }}</td>
+                                    <td>{{ '%.2f'|format(s.available_litres) }}</td>
+                                    <td>{{ '%.0f'|format(s.minimum_level) }}</td>
+                                    <td><span class="status-pill">{{ s.status }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+    <script type="application/json" id="chart-data">{{ {
+        'rev': data.monthly_revenue_series,
+        'daily': data.daily_sales_series,
+        'pie': data.fuel_distribution
+    }|tojson|safe }}</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var raw = document.getElementById('chart-data');
+            if (!raw || !window.Chart) return;
+            var d = JSON.parse(raw.textContent);
+            var revLabels = d.rev.map(function (x) { return x.label; });
+            var revVals = d.rev.map(function (x) { return x.total; });
+            new Chart(document.getElementById('chartRev'), {
+                type: 'line',
+                data: { labels: revLabels, datasets: [{ label: 'Revenue', data: revVals, tension: 0.25 }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+            var dayLabels = d.daily.map(function (x) { return x.day.slice(5); });
+            var dayVals = d.daily.map(function (x) { return x.total; });
+            new Chart(document.getElementById('chartDaily'), {
+                type: 'bar',
+                data: { labels: dayLabels, datasets: [{ label: 'Sales', data: dayVals }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+            new Chart(document.getElementById('chartPie'), {
+                type: 'pie',
+                data: {
+                    labels: d.pie.map(function (x) { return x.fuel_type; }),
+                    datasets: [{ data: d.pie.map(function (x) { return x.litres; }) }]
+                },
+                options: { responsive: true }
+            });
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+</body>
+</html>

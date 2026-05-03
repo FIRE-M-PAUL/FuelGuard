@@ -51,7 +51,7 @@ def test_accountant_records_expense(client, accountant_user):
         data={
             "description": "Station signage",
             "amount": "120.50",
-            "category": "Operations",
+            "category": "Other",
             "date": "2026-04-21",
         },
         follow_redirects=False,

@@ -21,18 +21,7 @@ def test_manager_cannot_access_accountant_routes(client, manager_user):
     assert client.get("/accountant/dashboard").status_code == 403
 
 
-def test_manager_approvals_page_ok(client, manager_user):
-    client.post(
-        "/login",
-        data={"username": "manager1", "password": "ManagerPass123!"},
-        follow_redirects=True,
-    )
-    resp = client.get("/manager/approvals")
-    assert resp.status_code == 200
-    assert b"Approval requests" in resp.data
-
-
-def test_manager_web_approve_updates_fuel_record(client, sales_user, manager_user):
+def test_manager_api_review_updates_fuel_record(client, sales_user, manager_user):
     client.post("/login", data={"username": "sales1", "password": "SalesPass123!"})
     create_resp = client.post(
         "/api/fuel/records",
@@ -49,11 +38,16 @@ def test_manager_web_approve_updates_fuel_record(client, sales_user, manager_use
         },
     )
     assert create_resp.status_code == 201
+    record_id = create_resp.get_json()["record_id"]
     client.post("/logout")
 
     client.post("/login", data={"username": "manager1", "password": "ManagerPass123!"}, follow_redirects=True)
-    apr = client.post("/manager/approve/1", follow_redirects=False)
-    assert apr.status_code == 302
+    apr = client.post(
+        f"/api/fuel/records/{record_id}/review",
+        json={"status": "approved", "note": "ok"},
+    )
+    assert apr.status_code == 200
+    assert apr.get_json()["ok"] is True
 
     client.post("/login", data={"username": "sales1", "password": "SalesPass123!"}, follow_redirects=True)
     lst = client.get("/api/fuel/records").get_json()

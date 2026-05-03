@@ -15,7 +15,7 @@ def test_fuel_levels_page_access_by_role(client, manager_user, sales_user, accou
     client.post("/login", data={"username": "sales1", "password": "SalesPass123!"})
     sales_resp = client.get("/fuel-levels")
     assert sales_resp.status_code == 200
-    assert b"read-only for sales and accounting users" in sales_resp.data
+    assert b"Fuel Tank Level Monitoring Dashboard" in sales_resp.data
     client.post("/logout")
 
     client.post("/login", data={"username": "acct1", "password": "AccountantPass123!"})
@@ -77,3 +77,77 @@ def test_fuel_levels_api_returns_status_and_days_estimate(client, app, manager_u
     assert by_type["Petrol"]["status_color"] == "green"
     assert by_type["Diesel"]["status_color"] == "red"
     assert by_type["Petrol"]["estimated_days_remaining"] == 60.0
+
+
+def test_fuel_level_adjustment_requires_admin_approval(client, app, manager_user, admin_user):
+    with app.app_context():
+        db = get_db()
+        db.execute(
+            "UPDATE fuel_stock SET available_litres = 500, tank_capacity = 10000, minimum_threshold = 1200 WHERE fuel_type = 'Diesel'"
+        )
+        db.commit()
+
+    client.post("/login", data={"username": "manager1", "password": "ManagerPass123!"})
+    sub = client.post(
+        "/manager/fuel-adjustment-requests/new",
+        data={
+            "fuel_type": "Diesel",
+            "requested_new_level": "3000",
+            "reason": "Manual correction after confirmed tanker delivery variance",
+        },
+        follow_redirects=True,
+    )
+    assert sub.status_code == 200
+    assert b"Adjustment request submitted" in sub.data
+
+    with app.app_context():
+        db = get_db()
+        stock_mid = db.execute(
+            "SELECT available_litres FROM fuel_stock WHERE fuel_type = 'Diesel'"
+        ).fetchone()
+        assert float(stock_mid["available_litres"]) == 500.0
+        rid = int(
+            db.execute("SELECT id FROM fuel_adjustment_requests ORDER BY id DESC LIMIT 1").fetchone()["id"]
+        )
+
+    client.post("/logout")
+    client.post(
+        "/admin/login",
+        data={"username": "admin", "password": "admin#G06"},
+        follow_redirects=True,
+    )
+    ap = client.post(
+        f"/admin/fuel-adjustment-requests/{rid}/approve",
+        data={"admin_comments": "Verified against dipstick reading and delivery docs."},
+        follow_redirects=True,
+    )
+    assert ap.status_code == 200
+    assert b"Request approved" in ap.data
+
+    with app.app_context():
+        db = get_db()
+        stock = db.execute(
+            "SELECT available_litres FROM fuel_stock WHERE fuel_type = 'Diesel'"
+        ).fetchone()
+        assert float(stock["available_litres"]) == 3000.0
+        adj = db.execute(
+            """
+            SELECT fuel_type, previous_level, new_level, reason
+            FROM fuel_adjustments
+            ORDER BY id DESC LIMIT 1
+            """
+        ).fetchone()
+        assert adj is not None
+        assert adj["fuel_type"] == "Diesel"
+        assert float(adj["previous_level"]) == 500.0
+        assert float(adj["new_level"]) == 3000.0
+
+
+def test_direct_fuel_level_adjust_route_removed(client, sales_user):
+    client.post("/login", data={"username": "sales1", "password": "SalesPass123!"})
+    resp = client.post(
+        "/fuel-levels/adjust",
+        data={"fuel_type": "Petrol", "new_level": "7000", "reason": "Not allowed"},
+        follow_redirects=False,
+    )
+    assert resp.status_code in (404, 405)

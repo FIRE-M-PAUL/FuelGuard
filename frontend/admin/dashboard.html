@@ -23,6 +23,8 @@
                 <a class="active" href="{{ url_for('admin.dashboard') }}">User Directory</a>
                 <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
                 <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
+                <a href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
                 <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
                 <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
             </nav>
@@ -60,6 +62,10 @@
                     <div class="k">Admin Roles</div>
                     <div class="v">{{ users|selectattr('role','equalto','admin')|list|length }}</div>
                 </article>
+                <article class="metric">
+                    <div class="k">Fuel level adjustments (pending)</div>
+                    <div class="v">{{ fuel_adj_pending }}</div>
+                </article>
             </section>
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -70,6 +76,40 @@
         </ul>
         {% endif %}
         {% endwith %}
+
+        <div class="panel" style="margin-bottom:14px;">
+            <h2>Fuel level adjustment requests (pending verification)</h2>
+            <p class="muted" style="margin-top:0;">Manager-submitted corrections. Approve to apply the requested reading to stock.</p>
+            {% if fuel_adj_pending > 0 %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fuel</th>
+                            <th>Requested (L)</th>
+                            <th>Manager</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in fuel_adj_preview %}
+                        <tr>
+                            <td>#{{ r['id'] }}</td>
+                            <td>{{ r['fuel_type'] }}</td>
+                            <td>{{ '%.2f'|format(r['requested_new_level']) }}</td>
+                            <td>{{ r['requested_by_username'] }}</td>
+                            <td><a class="btn btn-primary btn-small" href="{{ url_for('admin.admin_fuel_adjustment_request_detail', request_id=r['id']) }}">Review</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a class="btn btn-secondary" href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Open all adjustment requests</a>
+            {% else %}
+            <p class="muted">No pending fuel level adjustment requests.</p>
+            {% endif %}
+        </div>
 
         <div class="panel">
             <h2>User Directory & Security Actions</h2>

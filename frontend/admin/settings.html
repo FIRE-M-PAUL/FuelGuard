@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'shared/theme_init.html' %}
+    <title>Station settings — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div><div class="side-meta">Admin</div></div>
+            </div>
+            <nav class="side-links">
+                <a href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
+                <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
+                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+            </nav>
+            <div class="side-meta">{{ username }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group"><h1>Station settings</h1><div class="meta">{{ username }} · {{ role }}</div></div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-secondary" type="submit">Logout</button></form>
+            </header>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}<ul class="flash-list">{% for c,m in messages %}<li class="{{ c }}">{{ m }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
+            <article class="panel" style="max-width:560px;">
+                <h2>Station name</h2>
+                <p class="muted">Shown on customer receipts and printed reports.</p>
+                <form method="post" action="{{ url_for('admin.admin_settings') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="field">
+                        <label for="station_name">Station name</label>
+                        <input id="station_name" name="station_name" type="text" required maxlength="200" value="{{ station_name|e }}">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </form>
+            </article>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+</body>
+</html>

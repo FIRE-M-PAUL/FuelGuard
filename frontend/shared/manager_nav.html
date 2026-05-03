@@ -1,16 +1,20 @@
 ﻿<nav class="side-links">
     <a class="{{ 'active' if nav == 'dashboard' else '' }}"
         href="{{ url_for('staff.manager_dashboard') }}">Dashboard</a>
+    <a class="{{ 'active' if nav == 'analytics' else '' }}"
+        href="{{ url_for('staff.station_analytics') }}">Analytics</a>
     <a class="{{ 'active' if nav == 'sales' else '' }}"
         href="{{ url_for('staff.manager_sales') }}">Sales Monitor</a>
+    <a class="{{ 'active' if nav == 'shifts' else '' }}"
+        href="{{ url_for('staff.manager_shifts') }}">Staff shifts</a>
     <a class="{{ 'active' if nav == 'stock' else '' }}"
         href="{{ url_for('staff.manager_stock') }}">Fuel Stock</a>
     <a class="{{ 'active' if nav == 'fuel-levels' else '' }}"
         href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-    <a class="{{ 'active' if nav == 'approvals' else '' }}"
-        href="{{ url_for('staff.manager_approvals') }}">Approval Requests</a>
-    <a class="{{ 'active' if nav == 'reports' else '' }}"
-        href="{{ url_for('staff.manager_reports') }}">Reports</a>
+    <a class="{{ 'active' if nav == 'fuel-adjustment' else '' }}"
+        href="{{ url_for('staff.manager_fuel_adjustment_request_new') }}">Fuel level adjustment</a>
+    <a class="{{ 'active' if nav == 'reports-classic' else '' }}"
+        href="{{ url_for('staff.manager_reports') }}">Report tools</a>
     <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="side-link-btn">Logout</button>

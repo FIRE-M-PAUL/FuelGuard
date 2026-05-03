@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from backend.models import approval_request_model, fuel_model, fuel_sale_model
+from backend.models import fuel_model, fuel_sale_model
 
 
 def get_manager_dashboard_bundle() -> dict[str, Any]:
@@ -12,11 +12,6 @@ def get_manager_dashboard_bundle() -> dict[str, Any]:
     stock_rows = fuel_sale_model.list_stock_for_manager()
     low_rows = [r for r in stock_rows if r["status"] in {"Low", "Critical"}]
     metrics = fuel_model.dashboard_metrics()
-    pending_queue = approval_request_model.count_pending()
-    pending_preview = approval_request_model.list_requests(
-        status=approval_request_model.STATUS_PENDING,
-        limit=8,
-    )
     recent_sales = fuel_sale_model.list_recent_retail_sales(limit=10)
     today = datetime.now(UTC).date().isoformat()
     return {
@@ -27,8 +22,6 @@ def get_manager_dashboard_bundle() -> dict[str, Any]:
         "low_fuel_rows": low_rows,
         "low_fuel_alert": len(low_rows) > 0,
         "metrics": metrics,
-        "pending_approvals": pending_queue,
-        "pending_preview": pending_preview,
         "recent_sales": recent_sales,
     }
 
@@ -88,7 +81,6 @@ def export_operational_summary_rows() -> list[list[Any]]:
         ["date", bundle["today"]],
         ["retail_litres_sold_today", bundle["litres_sold_today"]],
         ["retail_sales_count_today", bundle["sales_transactions_today"]],
-        ["pending_approval_requests", bundle["pending_approvals"]],
         ["low_fuel_alert_count", len(bundle["low_fuel_rows"])],
         ["fuel_records_total", m["total_records"]],
         ["fuel_records_pending", m["pending_requests"]],

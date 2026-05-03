@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'shared/theme_init.html' %}
+    <title>Staff shifts — FuelGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-shell">
+        <aside class="dash-side">
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div>
+                    <div class="side-meta">Operations Control</div>
+                </div>
+            </div>
+            {% include 'shared/manager_nav.html' %}
+            <div class="side-meta">Department: {{ user['department'] or '—' }}</div>
+        </aside>
+        <main class="dash-content">
+            <header class="dash-top">
+                <div class="title-group">
+                    <h1>Staff shift management</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                </div>
+                <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-secondary" type="submit">Logout</button>
+                </form>
+            </header>
+
+            <article class="panel" style="margin-bottom:14px;">
+                <h2 style="margin-top:0;">Overview</h2>
+                <p class="muted" style="margin-top:0;">
+                    When a salesperson <strong>starts</strong> a shift they record opening meter, opening cash float, and optional notes.
+                    <strong>Open</strong> shifts show live sales totals for their window; <strong>closed</strong> shifts show final readings and notes (including end-of-shift comments).
+                </p>
+                <p style="margin-bottom:0;"><strong>{{ open_shift_count }}</strong> <span class="muted">open shift(s) right now</span></p>
+            </article>
+
+            <article class="panel">
+                <h2 style="margin-top:0;">Recent shifts (all staff)</h2>
+                <div class="table-wrap" style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Staff</th>
+                                <th>Status</th>
+                                <th>Started</th>
+                                <th>Ended</th>
+                                <th>Open meter</th>
+                                <th>Open cash</th>
+                                <th>Start / shift notes</th>
+                                <th>Close meter</th>
+                                <th>Cash coll.</th>
+                                <th>Litres</th>
+                                <th>Revenue</th>
+                                <th>Txns</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sh in shifts %}
+                            <tr>
+                                <td>#{{ sh['id'] }}</td>
+                                <td>
+                                    <strong>{{ sh['username'] }}</strong>
+                                    <div class="muted" style="font-size:12px;">{{ sh['full_name'] or '—' }} · {{ (sh['user_role'] or '')|lower }}</div>
+                                </td>
+                                <td>
+                                    {% if (sh['status'] or '')|lower == 'open' %}
+                                    <span class="status-pill" style="background:rgba(59,130,246,0.15);">Open</span>
+                                    {% else %}
+                                    <span class="status-pill" style="background:rgba(100,116,139,0.12);">Closed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ sh['started_at'] }}</td>
+                                <td>{{ sh['ended_at'] or '—' }}</td>
+                                <td>{{ '%.2f'|format(sh['opening_meter']) }}</td>
+                                <td>{{ '%.2f'|format(sh['opening_cash'] or 0) }}</td>
+                                <td style="max-width:220px;white-space:normal;font-size:13px;">{{ sh['notes'] or '—' }}</td>
+                                <td>{% if sh['closing_meter'] is not none %}{{ '%.2f'|format(sh['closing_meter']) }}{% else %}—{% endif %}</td>
+                                <td>{% if sh['cash_collected'] is not none %}{{ '%.2f'|format(sh['cash_collected']) }}{% else %}—{% endif %}</td>
+                                <td>{{ '%.2f'|format(sh['summary']['litres']) }}</td>
+                                <td>K{{ '%.2f'|format(sh['summary']['revenue']) }}</td>
+                                <td>{{ sh['summary']['transactions'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="13" class="muted">No shifts recorded yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="muted" style="margin-bottom:0;">Litres / revenue / transactions are from retail sales by that user during the shift window (open shifts use “now” as the end time for the live total).</p>
+            </article>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+</body>
+
+</html>

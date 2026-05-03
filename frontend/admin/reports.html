@@ -13,11 +13,16 @@
 <body class="dashboard-body">
     <div class="dash-shell">
         <aside class="dash-side">
-            <div class="side-brand">{% include 'shared/brand_logo.html' %}<div><div class="side-meta">Audit Console</div></div></div>
+            <div class="side-brand">
+                {% include 'shared/brand_logo.html' %}
+                <div><div class="side-meta">Audit Console</div></div>
+            </div>
             <nav class="side-links">
                 <a href="{{ url_for('admin.dashboard') }}">User Directory</a>
                 <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
                 <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
+                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
                 <a class="active" href="{{ url_for('admin.view_logs') }}">System Logs</a>
             </nav>
         </aside>

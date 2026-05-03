@@ -9,8 +9,17 @@ from backend.models.fuel_sale_model import ALLOWED_FUEL_TYPES
 from backend.models.user_model import get_db
 
 EXPENSE_CATEGORIES = frozenset(
-    {"Operations", "Maintenance", "Admin", "Payroll", "Utilities", "Other"}
+    {"Fuel Purchase", "Maintenance", "Salary", "Utilities", "Other"}
 )
+
+_LEGACY_EXPENSE_CATEGORY_MAP = {
+    "Operations": "Other",
+    "Admin": "Other",
+    "Payroll": "Salary",
+    "Maintenance": "Maintenance",
+    "Utilities": "Utilities",
+    "Other": "Other",
+}
 
 
 def _migrate_fuel_sales_verification(db: sqlite3.Connection) -> None:
@@ -23,6 +32,26 @@ def _migrate_fuel_sales_verification(db: sqlite3.Connection) -> None:
         db.execute("ALTER TABLE fuel_sales ADD COLUMN verified_at TIMESTAMP")
     if "verified_by" not in cols:
         db.execute("ALTER TABLE fuel_sales ADD COLUMN verified_by INTEGER")
+
+
+def _migrate_expense_columns(db: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in db.execute("PRAGMA table_info(expenses)").fetchall()}
+    if "expense_name" not in cols:
+        db.execute("ALTER TABLE expenses ADD COLUMN expense_name TEXT")
+    db.execute(
+        """
+        UPDATE expenses
+        SET expense_name = description
+        WHERE expense_name IS NULL OR trim(expense_name) = ''
+        """
+    )
+
+
+def _migrate_expense_categories_inplace(db: sqlite3.Connection) -> None:
+    for old, new in _LEGACY_EXPENSE_CATEGORY_MAP.items():
+        if old == new:
+            continue
+        db.execute("UPDATE expenses SET category = ? WHERE category = ?", (new, old))
 
 
 def init_db() -> None:
@@ -63,11 +92,14 @@ def init_db() -> None:
         """
     )
     _migrate_fuel_sales_verification(db)
+    _migrate_expense_columns(db)
+    _migrate_expense_categories_inplace(db)
     db.commit()
 
 
 def add_expense(
     *,
+    expense_name: str | None,
     description: str,
     amount: float,
     category: str,
@@ -75,12 +107,14 @@ def add_expense(
     recorded_by: int,
 ) -> int:
     db = get_db()
+    name = (expense_name or description or "").strip() or "Expense"
     cur = db.execute(
         """
-        INSERT INTO expenses (description, amount, category, date, recorded_by)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO expenses (expense_name, description, amount, category, date, recorded_by)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
+            name,
             description.strip(),
             amount,
             category.strip(),
@@ -105,6 +139,113 @@ def list_expenses(*, limit: int = 200) -> list[sqlite3.Row]:
         (limit,),
     )
     return cur.fetchall()
+
+
+def list_expenses_filtered(
+    *,
+    date_from: str | None = None,
+    date_to: str | None = None,
+    category: str | None = None,
+    limit: int = 500,
+) -> list[sqlite3.Row]:
+    db = get_db()
+    clauses: list[str] = ["1=1"]
+    params: list[Any] = []
+    if date_from:
+        clauses.append("date(e.date) >= date(?)")
+        params.append(date_from)
+    if date_to:
+        clauses.append("date(e.date) <= date(?)")
+        params.append(date_to)
+    if category:
+        clauses.append("e.category = ?")
+        params.append(category)
+    where = " AND ".join(clauses)
+    params.append(limit)
+    return db.execute(
+        f"""
+        SELECT e.*, u.username AS recorded_by_username
+        FROM expenses e
+        JOIN users u ON u.id = e.recorded_by
+        WHERE {where}
+        ORDER BY e.date DESC, e.id DESC
+        LIMIT ?
+        """,
+        params,
+    ).fetchall()
+
+
+def total_expenses_filtered(
+    *,
+    date_from: str | None = None,
+    date_to: str | None = None,
+    category: str | None = None,
+) -> float:
+    db = get_db()
+    clauses: list[str] = ["1=1"]
+    params: list[Any] = []
+    if date_from:
+        clauses.append("date(date) >= date(?)")
+        params.append(date_from)
+    if date_to:
+        clauses.append("date(date) <= date(?)")
+        params.append(date_to)
+    if category:
+        clauses.append("category = ?")
+        params.append(category)
+    where = " AND ".join(clauses)
+    row = db.execute(
+        f"SELECT COALESCE(SUM(amount), 0) AS s FROM expenses WHERE {where}",
+        params,
+    ).fetchone()
+    return float(row["s"] or 0) if row else 0.0
+
+
+def get_expense(expense_id: int) -> sqlite3.Row | None:
+    db = get_db()
+    return db.execute("SELECT * FROM expenses WHERE id = ?", (expense_id,)).fetchone()
+
+
+def update_expense(
+    expense_id: int,
+    *,
+    expense_name: str,
+    description: str,
+    amount: float,
+    category: str,
+    date_str: str,
+) -> bool:
+    db = get_db()
+    cur = db.execute(
+        """
+        UPDATE expenses
+        SET expense_name = ?, description = ?, amount = ?, category = ?, date = ?
+        WHERE id = ?
+        """,
+        (expense_name.strip(), description.strip(), amount, category.strip(), date_str, expense_id),
+    )
+    db.commit()
+    return cur.rowcount > 0
+
+
+def delete_expense(expense_id: int) -> bool:
+    db = get_db()
+    cur = db.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+    db.commit()
+    return cur.rowcount > 0
+
+
+def total_fuel_purchase_cost_between(date_from: str, date_to: str) -> float:
+    db = get_db()
+    row = db.execute(
+        """
+        SELECT COALESCE(SUM(total_cost), 0) AS s
+        FROM fuel_purchases
+        WHERE date(purchase_date) >= date(?) AND date(purchase_date) <= date(?)
+        """,
+        (date_from, date_to),
+    ).fetchone()
+    return float(row["s"]) if row else 0.0
 
 
 def record_fuel_purchase(

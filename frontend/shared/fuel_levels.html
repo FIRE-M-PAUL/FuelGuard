@@ -52,12 +52,100 @@
                 </div>
             </header>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-list">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
             {% if has_critical %}
             <article class="panel fuel-alert-critical">
                 <h2>CRITICAL: Fuel level is low. Please schedule refueling.</h2>
                 <p class="muted" style="margin:0;">At least one fuel tank is below the critical threshold (&lt; 25% or below minimum threshold).</p>
             </article>
             {% endif %}
+
+            {% if can_request_adjustment and levels %}
+            <article class="panel">
+                <h2 style="margin-top:0;">Fuel level adjustment (approval required)</h2>
+                <p class="muted" style="margin-top:0;">Tank readings cannot be changed directly. Submit a request for admin review; stock updates only after approval. For routine deliveries, use <strong>Record fuel delivery</strong> (accountant: Fuel Purchases).</p>
+                <a class="btn btn-primary" href="{{ url_for('staff.manager_fuel_adjustment_request_new') }}">Request fuel level adjustment</a>
+                <h3 style="margin-top:1.25rem;">My adjustment requests</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fuel</th>
+                                <th>Previous (L)</th>
+                                <th>Requested (L)</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in my_adjustment_requests %}
+                            <tr>
+                                <td>#{{ r['id'] }}</td>
+                                <td>{{ r['fuel_type'] }}</td>
+                                <td>{{ '%.2f'|format(r['previous_level']) }}</td>
+                                <td>{{ '%.2f'|format(r['requested_new_level']) }}</td>
+                                <td>
+                                    {% set rs = (r['status'] or '')|upper %}
+                                    {% if rs == 'PENDING_VERIFICATION' %}<span class="status-pill" style="background:rgba(251,191,36,0.12);">Pending verification</span>
+                                    {% elif rs == 'APPROVED' %}<span class="status-pill" style="background:rgba(34,197,94,0.15);">Approved</span>
+                                    {% elif rs == 'REJECTED' %}<span class="status-pill" style="background:rgba(239,68,68,0.12);">Rejected</span>
+                                    {% else %}{{ r['status'] }}{% endif %}
+                                </td>
+                                <td>{{ r['date_created'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="muted">No adjustment requests yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+            {% endif %}
+
+            <article class="panel">
+                <h2>Applied fuel level adjustments (audit)</h2>
+                <p class="muted" style="margin-top:0;">History of approved corrections applied to the system.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Fuel Type</th>
+                                <th>Previous (L)</th>
+                                <th>New (L)</th>
+                                <th>Approved / recorded by</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_adjustments %}
+                            <tr>
+                                <td>#{{ item['id'] }}</td>
+                                <td>{{ item['date'] }}</td>
+                                <td>{{ item['fuel_type'] }}</td>
+                                <td>{{ '%.2f'|format(item['previous_level']) }}</td>
+                                <td>{{ '%.2f'|format(item['new_level']) }}</td>
+                                <td>{{ item['adjusted_by_username'] }}</td>
+                                <td>{{ item['reason'] }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" class="muted">No applied adjustments recorded yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
 
             <section class="fuel-level-grid">
                 {% for level in levels %}
@@ -66,8 +154,10 @@
                     <div class="fuel-level-layout">
                         <div class="fuel-tank-shell">
                             <div class="fuel-tank">
-                                <div class="fuel-fill fuel-{{ level.status_color }}" style="height: {{ level.level_percentage }}%;">
-                                    <span>{{ '%.1f'|format(level.level_percentage) }}%</span>
+                                <div class="fuel-tank-track">
+                                    <div class="fuel-fill fuel-{{ level.status_color }}" style="height: {{ level.level_percentage }}%;">
+                                        <span>{{ '%.1f'|format(level.level_percentage) }}%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -98,18 +188,6 @@
                 {% endfor %}
             </section>
 
-            <article class="panel">
-                <h2>Access Profile</h2>
-                <p class="muted">This screen is read-only for sales and accounting users; stock quantities update automatically from sales and fuel purchase transactions.</p>
-                <div class="timeline">
-                    <div class="timeline-item">Manager: Monitor trends, act on low fuel alerts{% if can_approve_deliveries %}, and approve deliveries{% endif %}.</div>
-                    <div class="timeline-item">Salesperson: View fuel availability only.</div>
-                    <div class="timeline-item">Accountant: View levels for reporting and reconciliation.</div>
-                    {% if can_configure_thresholds %}
-                    <div class="timeline-item">Admin: Full monitoring visibility with threshold configuration authority.</div>
-                    {% endif %}
-                </div>
-            </article>
         </main>
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>

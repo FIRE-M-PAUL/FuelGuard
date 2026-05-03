@@ -94,8 +94,22 @@ def init_db() -> None:
             CHECK (available_litres >= 0)
         );
 
+        CREATE TABLE IF NOT EXISTS fuel_adjustments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fuel_type TEXT NOT NULL,
+            previous_level REAL NOT NULL,
+            new_level REAL NOT NULL,
+            reason TEXT NOT NULL,
+            adjusted_by INTEGER NOT NULL,
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            CHECK (previous_level >= 0),
+            CHECK (new_level >= 0),
+            FOREIGN KEY(adjusted_by) REFERENCES users(id) ON DELETE RESTRICT
+        );
+
         CREATE INDEX IF NOT EXISTS idx_fuel_sales_salesperson ON fuel_sales(salesperson_id);
         CREATE INDEX IF NOT EXISTS idx_fuel_sales_sale_date ON fuel_sales(sale_date);
+        CREATE INDEX IF NOT EXISTS idx_fuel_adjustments_date ON fuel_adjustments(date);
         """
     )
     for ft in sorted(ALLOWED_FUEL_TYPES):
@@ -289,6 +303,95 @@ def get_stock_row(fuel_type: str) -> sqlite3.Row | None:
     return cur.fetchone()
 
 
+def adjust_fuel_level(
+    *,
+    fuel_type: str,
+    new_level: float,
+    reason: str,
+    adjusted_by: int,
+) -> tuple[int | None, str | None]:
+    fuel_type_clean = fuel_type.strip()
+    if fuel_type_clean not in ALLOWED_FUEL_TYPES:
+        return None, "Invalid fuel type."
+    if new_level < 0:
+        return None, "New fuel level cannot be negative."
+    reason_clean = reason.strip()
+    if not reason_clean:
+        return None, "Reason for adjustment is required."
+
+    db = get_db()
+    row = db.execute(
+        """
+        SELECT available_litres, COALESCE(tank_capacity, ?) AS tank_capacity,
+               COALESCE(minimum_threshold, minimum_level, ?) AS minimum_threshold
+        FROM fuel_stock
+        WHERE fuel_type = ?
+        """,
+        (DEFAULT_TANK_CAPACITY_LITRES, DEFAULT_MINIMUM_LITRES, fuel_type_clean),
+    ).fetchone()
+    if not row:
+        return None, "Fuel type not found in stock catalog."
+
+    capacity = float(row["tank_capacity"] or DEFAULT_TANK_CAPACITY_LITRES)
+    if new_level > capacity:
+        return None, f"New fuel level cannot exceed tank capacity ({capacity:.2f} L)."
+    previous_level = float(row["available_litres"] or 0.0)
+    minimum = float(row["minimum_threshold"] or DEFAULT_MINIMUM_LITRES)
+
+    try:
+        db.execute("BEGIN IMMEDIATE")
+        db.execute(
+            """
+            UPDATE fuel_stock
+            SET available_litres = ?, last_updated = CURRENT_TIMESTAMP
+            WHERE fuel_type = ?
+            """,
+            (round(new_level, 3), fuel_type_clean),
+        )
+        cur = db.execute(
+            """
+            INSERT INTO fuel_adjustments (fuel_type, previous_level, new_level, reason, adjusted_by)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (fuel_type_clean, previous_level, float(new_level), reason_clean, adjusted_by),
+        )
+        adjustment_id = int(cur.lastrowid)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+    try:
+        from backend.models import station_model
+
+        station_model.reconcile_low_fuel_alert(fuel_type_clean, float(new_level), minimum)
+    except Exception:
+        pass
+    return adjustment_id, None
+
+
+def list_recent_fuel_adjustments(*, limit: int = 30) -> list[sqlite3.Row]:
+    db = get_db()
+    return db.execute(
+        """
+        SELECT fa.*, u.username AS adjusted_by_username
+        FROM fuel_adjustments fa
+        JOIN users u ON u.id = fa.adjusted_by
+        ORDER BY fa.date DESC, fa.id DESC
+        LIMIT ?
+        """,
+        (limit,),
+    ).fetchall()
+
+
+def get_fuel_adjustment(adjustment_id: int) -> sqlite3.Row | None:
+    db = get_db()
+    return db.execute(
+        "SELECT * FROM fuel_adjustments WHERE id = ?",
+        (adjustment_id,),
+    ).fetchone()
+
+
 def get_sale_by_id(sale_id: int) -> sqlite3.Row | None:
     db = get_db()
     cur = db.execute(
@@ -458,6 +561,27 @@ def record_sale(
         )
         sale_id = int(cur.lastrowid)
         db.commit()
+        try:
+            from backend.models import station_model
+
+            row2 = get_db().execute(
+                """
+                SELECT available_litres,
+                       COALESCE(minimum_threshold, minimum_level, ?) AS minl
+                FROM fuel_stock
+                WHERE fuel_type = ?
+                """,
+                (DEFAULT_MINIMUM_LITRES, fuel_type),
+            ).fetchone()
+            if row2:
+                station_model.reconcile_low_fuel_alert(
+                    fuel_type,
+                    float(row2["available_litres"] or 0),
+                    float(row2["minl"] or DEFAULT_MINIMUM_LITRES),
+                )
+            station_model.maybe_alert_large_sale(sale_id, float(expected))
+        except Exception:
+            pass
         return sale_id, None
     except Exception:
         db.rollback()

@@ -14,12 +14,14 @@ class Permission(str, Enum):
     SALES_PORTAL = "sales_portal"
     MANAGER_PORTAL = "manager_portal"
     ACCOUNTANT_PORTAL = "accountant_portal"
+    STATION_INSIGHTS = "station_insights"
 
 
 PERMISSION_TO_ROLES: dict[Permission, frozenset[str]] = {
     Permission.SALES_PORTAL: frozenset({"sales"}),
     Permission.MANAGER_PORTAL: frozenset({"manager"}),
     Permission.ACCOUNTANT_PORTAL: frozenset({"accountant"}),
+    Permission.STATION_INSIGHTS: frozenset({"manager", "accountant"}),
 }
 
 

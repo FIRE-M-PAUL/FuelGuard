@@ -5,7 +5,13 @@ from pathlib import Path
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 
-from backend.models import fuel_sale_model, user_model
+from backend.models import (
+    audit_log_model,
+    fuel_adjustment_request_model,
+    fuel_sale_model,
+    station_model,
+    user_model,
+)
 from backend.services import audit_service
 from backend.services.auth_service import hash_password, verify_password
 from backend.services.logging_service import log_event
@@ -96,12 +102,16 @@ def login():
 def dashboard():
     users = user_model.list_users()
     current_id = int(session["user_id"])
+    fuel_adj_pending = fuel_adjustment_request_model.count_pending_for_admin()
+    fuel_adj_preview = fuel_adjustment_request_model.list_pending_for_admin(limit=6)
     return render_template(
         "admin/dashboard.html",
         users=users,
         current_user_id=current_id,
         role=session.get("role"),
         username=session.get("username"),
+        fuel_adj_pending=fuel_adj_pending,
+        fuel_adj_preview=fuel_adj_preview,
     )
 
 
@@ -294,6 +304,43 @@ def retail_prices():
         "success",
     )
     return redirect(url_for("admin.retail_prices"))
+
+
+@admin_bp.route("/settings", methods=["GET", "POST"])
+@admin_login_required
+@role_required("admin")
+def admin_settings():
+    if request.method == "POST":
+        name = (request.form.get("station_name") or "").strip() or station_model.DEFAULT_STATION_NAME
+        station_model.set_setting("station_name", name[:200])
+        log_event(f"Admin updated station_name admin_id={session.get('user_id')}")
+        audit_service.record(
+            "settings_updated",
+            user_id=int(session["user_id"]),
+            username=session.get("username"),
+            details="station_name",
+        )
+        flash("Station settings saved.", "success")
+        return redirect(url_for("admin.admin_settings"))
+    return render_template(
+        "admin/settings.html",
+        station_name=station_model.station_name(),
+        username=session.get("username"),
+        role=session.get("role"),
+    )
+
+
+@admin_bp.route("/audit-logs")
+@admin_login_required
+@role_required("admin")
+def admin_audit_logs_db():
+    rows = audit_log_model.list_recent(limit=500)
+    return render_template(
+        "admin/audit_logs.html",
+        entries=rows,
+        username=session.get("username"),
+        role=session.get("role"),
+    )
 
 
 @admin_bp.route("/logs")

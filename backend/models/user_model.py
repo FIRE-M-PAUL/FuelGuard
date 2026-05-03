@@ -59,6 +59,7 @@ def init_db() -> None:
         db.execute("ALTER TABLE users ADD COLUMN phone TEXT")
     db.commit()
     _migrate_users_table_for_pending_status(db)
+    _migrate_users_remove_attendant_role(db)
     _repair_users_legacy_foreign_keys(db)
     _drop_orphan_users_legacy_table(db)
 
@@ -78,16 +79,17 @@ _FK_CHILD_INDEX_SQL: dict[str, tuple[str, ...]] = {
         "CREATE INDEX IF NOT EXISTS idx_fuel_submitted_by ON fuel_records(submitted_by)",
         "CREATE INDEX IF NOT EXISTS idx_fuel_vehicle_id ON fuel_records(vehicle_id)",
     ),
-    "approval_requests": (
-        "CREATE INDEX IF NOT EXISTS idx_approval_status ON approval_requests(status)",
-        "CREATE INDEX IF NOT EXISTS idx_approval_requested_by ON approval_requests(requested_by)",
-    ),
     "expenses": (
         "CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(date)",
         "CREATE INDEX IF NOT EXISTS idx_expenses_recorded ON expenses(recorded_by)",
     ),
     "fuel_purchases": (
         "CREATE INDEX IF NOT EXISTS idx_purchases_date ON fuel_purchases(purchase_date)",
+    ),
+    "shifts": (
+        "CREATE INDEX IF NOT EXISTS idx_shifts_user ON shifts(user_id)",
+        "CREATE INDEX IF NOT EXISTS idx_shifts_started ON shifts(started_at)",
+        "CREATE INDEX IF NOT EXISTS idx_shifts_status ON shifts(status)",
     ),
 }
 
@@ -121,9 +123,69 @@ def _migrate_users_table_for_pending_status(db: sqlite3.Connection) -> None:
                 CHECK (role IN ('sales', 'manager', 'accountant', 'admin')),
                 CHECK (status IN ('active', 'inactive', 'pending'))
             );
-            INSERT INTO users__pending_migrate SELECT * FROM users;
+            INSERT INTO users__pending_migrate (
+                id, full_name, username, email, password_hash, role, phone, department, status, created_at
+            )
+            SELECT
+                id, full_name, username, email, password_hash,
+                CASE WHEN LOWER(TRIM(role)) = 'attendant' THEN 'sales' ELSE role END,
+                phone, department, status, created_at
+            FROM users;
             DROP TABLE users;
             ALTER TABLE users__pending_migrate RENAME TO users;
+            CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+            CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+            CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+            CREATE INDEX IF NOT EXISTS idx_users_status ON users(status);
+            """
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.execute("PRAGMA foreign_keys=ON")
+
+
+def _migrate_users_remove_attendant_role(db: sqlite3.Connection) -> None:
+    """Map attendant accounts to sales and rebuild users CHECK without attendant."""
+    cur = db.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='users'")
+    row = cur.fetchone()
+    if not row or not row[0]:
+        return
+    ddl = row[0]
+    if "attendant" not in ddl.lower():
+        return
+
+    db.execute("PRAGMA foreign_keys=OFF")
+    db.execute("BEGIN IMMEDIATE")
+    try:
+        db.executescript(
+            """
+            CREATE TABLE users__strip_att (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                full_name TEXT,
+                username TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                role TEXT NOT NULL,
+                phone TEXT,
+                department TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CHECK (role IN ('sales', 'manager', 'accountant', 'admin')),
+                CHECK (status IN ('active', 'inactive', 'pending'))
+            );
+            INSERT INTO users__strip_att (
+                id, full_name, username, email, password_hash, role, phone, department, status, created_at
+            )
+            SELECT
+                id, full_name, username, email, password_hash,
+                CASE WHEN LOWER(TRIM(role)) = 'attendant' THEN 'sales' ELSE role END,
+                phone, department, status, created_at
+            FROM users;
+            DROP TABLE users;
+            ALTER TABLE users__strip_att RENAME TO users;
             CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
             CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
             CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);

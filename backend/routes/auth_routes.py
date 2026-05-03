@@ -42,7 +42,11 @@ def _redirect_staff_home(role: str) -> str:
 
 def _parse_role(raw_role: str) -> str:
     role = (raw_role or "").strip().lower()
-    return "sales" if role == "salesperson" else role
+    if role == "salesperson":
+        return "sales"
+    if role == "attendant":
+        return "sales"
+    return role
 
 
 @staff_bp.get("/")

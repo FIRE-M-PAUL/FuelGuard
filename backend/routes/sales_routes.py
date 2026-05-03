@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from flask import flash, redirect, render_template, request, session, url_for
 
-from backend.models import fuel_model, fuel_sale_model, user_model
+from backend.models import fuel_model, fuel_sale_model, station_model, user_model
 from backend.routes.auth_routes import staff_bp
 from backend.security.rbac import Permission, require_permissions
 from backend.services import audit_service
@@ -170,4 +170,5 @@ def sale_receipt(sale_id: int):
         sale=sale,
         user=user,
         role=session.get("role"),
+        station_name=station_model.station_name(),
     )

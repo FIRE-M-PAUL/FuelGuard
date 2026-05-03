@@ -30,6 +30,8 @@ from backend.routes.user_routes import admin_bp  # noqa: E402
 import backend.routes.inventory_routes  # noqa: E402,F401 — staff + fuel API routes
 import backend.routes.report_routes  # noqa: E402,F401
 import backend.routes.sales_routes  # noqa: E402,F401
+import backend.routes.station_routes  # noqa: E402,F401
+import backend.routes.fuel_adjustment_routes  # noqa: E402,F401
 from backend.services.auth_service import hash_password  # noqa: E402
 from backend.services.logging_service import log_event  # noqa: E402
 
@@ -188,10 +190,13 @@ def create_app(config_object: type | None = None) -> Flask:
         from backend.models import accounting_model
 
         accounting_model.init_db()
-        from backend.models import approval_request_model
-
-        approval_request_model.init_db()
         audit_log_model.init_db()
+        from backend.models import station_model
+
+        station_model.init_db()
+        from backend.models import fuel_adjustment_request_model
+
+        fuel_adjustment_request_model.init_db()
         _seed_initial_admin(app)
         _sync_admin_password_if_requested(app)
 

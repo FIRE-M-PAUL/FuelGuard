@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include 'shared/theme_init.html' %}
-    <title>Record fuel purchase — FuelGuard</title>
+    <title>Record fuel delivery — FuelGuard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
@@ -25,8 +25,8 @@
         <main class="dash-content">
             <header class="dash-top">
                 <div class="title-group">
-                    <h1>Record fuel purchase</h1>
-                    <div class="meta">{{ user['username'] }} · {{ role }}</div>
+                    <h1>Record fuel delivery</h1>
+                    <div class="meta">{{ user['username'] }} · {{ role }} · Updates stock when saved</div>
                 </div>
                 <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

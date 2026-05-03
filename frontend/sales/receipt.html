@@ -21,8 +21,8 @@
     <div class="dash-content" style="max-width:520px; margin:0 auto; padding:32px;">
         <header class="dash-top" style="margin-bottom:20px;">
             <div class="title-group">
-                <h1>FuelGuard — Sale receipt</h1>
-                <div class="meta">Receipt #{{ sale['id'] }}</div>
+                <h1>{{ station_name }} — Sale receipt</h1>
+                <div class="meta">Transaction ID #{{ sale['id'] }}</div>
             </div>
             <div class="no-print" style="display:flex; gap:8px;">
                 <button class="btn btn-primary" type="button" onclick="window.print()">Print receipt</button>
@@ -61,7 +61,7 @@
                         <td>{{ sale['vehicle_number'] }}</td>
                     </tr>
                     <tr>
-                        <td class="muted">Date</td>
+                        <td class="muted">Date &amp; time</td>
                         <td>{{ sale['sale_date'] }}</td>
                     </tr>
                     <tr>
