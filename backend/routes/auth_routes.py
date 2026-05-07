@@ -16,10 +16,11 @@ from backend.services.validation_service import (
 )
 from backend.security.session_manager import (
     clear_failed_login,
+    clear_session_cookie,
     clear_session,
+    establish_user_session,
     is_login_locked,
     register_failed_login,
-    refresh_session_activity,
     staff_login_required,
 )
 
@@ -29,6 +30,12 @@ ROLE_LABELS = {
     "manager": "Manager",
     "accountant": "Accountant",
 }
+
+
+def _with_auth_sync(url: str, *, sync: str) -> str:
+    """Append one-shot query so other tabs can detect login/logout via localStorage sync."""
+    sep = "&" if ("?" in url) else "?"
+    return f"{url}{sep}fg_auth_sync={sync}"
 
 
 def _redirect_staff_home(role: str) -> str:
@@ -123,13 +130,35 @@ def register():
 @staff_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        if session.get("user_id"):
-            return redirect(_redirect_staff_home(session.get("role", "")))
         selected = _parse_role(request.args.get("role") or "sales")
         if selected not in ROLE_LABELS:
             selected = "sales"
+        already = bool(session.get("user_id"))
+        session_user = None
+        if already:
+            session_user = user_model.get_user_by_id(int(session["user_id"]))
+            if not session_user:
+                clear_session()
+                already = False
+        if already and session_user is not None:
+            # Visiting the sign-in page while signed in: end session silently and show a fresh form.
+            uid = session.get("user_id")
+            uname = session.get("username")
+            clear_session()
+            if uid:
+                log_event(f"User logout user_id={uid} (cleared on staff login page visit)")
+                audit_service.record(
+                    audit_service.ACTION_LOGOUT,
+                    user_id=int(uid),
+                    username=uname,
+                    details="staff portal: session cleared on login page GET",
+                )
+            target = _with_auth_sync(url_for("staff.login", role=selected), sync="logout")
+            return clear_session_cookie(redirect(target))
         return render_template(
-            "shared/login.html", selected_role=selected, role_labels=ROLE_LABELS
+            "shared/login.html",
+            selected_role=selected,
+            role_labels=ROLE_LABELS,
         )
     return _handle_login(_parse_role(request.form.get("role") or ""))
 
@@ -139,8 +168,29 @@ def role_login_page(role: str):
     selected = _parse_role(role)
     if selected not in ROLE_LABELS:
         return redirect(url_for("staff.login"))
+    already = bool(session.get("user_id"))
+    session_user = user_model.get_user_by_id(int(session["user_id"])) if already else None
+    if already and not session_user:
+        clear_session()
+        already = False
+    if already and session_user is not None:
+        uid = session.get("user_id")
+        uname = session.get("username")
+        clear_session()
+        if uid:
+            log_event(f"User logout user_id={uid} (cleared on staff role login page visit)")
+            audit_service.record(
+                audit_service.ACTION_LOGOUT,
+                user_id=int(uid),
+                username=uname,
+                details="staff portal: session cleared on role login page GET",
+            )
+        target = _with_auth_sync(url_for("staff.role_login_page", role=selected), sync="logout")
+        return clear_session_cookie(redirect(target))
     return render_template(
-        "shared/login.html", selected_role=selected, role_labels=ROLE_LABELS
+        "shared/login.html",
+        selected_role=selected,
+        role_labels=ROLE_LABELS,
     )
 
 
@@ -259,12 +309,11 @@ def _handle_login(selected_role: str):
             403,
         )
 
-    session.clear()
-    session.permanent = True
-    session["user_id"] = user["id"]
-    session["username"] = user["username"]
-    session["role"] = role
-    refresh_session_activity()
+    establish_user_session(
+        user_id=int(user["id"]),
+        username=str(user["username"]),
+        role=role,
+    )
 
     log_event(f"Login success user_id={user['id']} role={role}")
     audit_service.record(
@@ -275,8 +324,8 @@ def _handle_login(selected_role: str):
     )
     nxt = request.args.get("next")
     if nxt and nxt.startswith("/") and not nxt.startswith("//"):
-        return redirect(nxt)
-    return redirect(_redirect_staff_home(role))
+        return redirect(_with_auth_sync(nxt, sync="1"))
+    return redirect(_with_auth_sync(_redirect_staff_home(role), sync="1"))
 
 
 @staff_bp.route("/logout", methods=["POST"])
@@ -293,4 +342,5 @@ def logout():
             details="staff portal",
         )
     flash("You have been signed out.")
-    return redirect(url_for("staff.login"))
+    response = redirect(url_for("staff.login", fg_auth_sync="logout"))
+    return clear_session_cookie(response)

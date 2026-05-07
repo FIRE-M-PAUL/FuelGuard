@@ -79,7 +79,9 @@ def test_fuel_levels_api_returns_status_and_days_estimate(client, app, manager_u
     assert by_type["Petrol"]["estimated_days_remaining"] == 60.0
 
 
-def test_fuel_level_adjustment_requires_admin_approval(client, app, manager_user, admin_user):
+def test_fuel_level_adjustment_requires_accountant_then_admin_approval(
+    client, app, manager_user, accountant_user, admin_user
+):
     with app.app_context():
         db = get_db()
         db.execute(
@@ -116,9 +118,44 @@ def test_fuel_level_adjustment_requires_admin_approval(client, app, manager_user
         data={"username": "admin", "password": "admin#G06"},
         follow_redirects=True,
     )
-    ap = client.post(
+    early_admin_attempt = client.post(
         f"/admin/fuel-adjustment-requests/{rid}/approve",
         data={"admin_comments": "Verified against dipstick reading and delivery docs."},
+        follow_redirects=True,
+    )
+    assert early_admin_attempt.status_code == 200
+    assert b"not ready for final admin approval" in early_admin_attempt.data
+
+    with app.app_context():
+        db = get_db()
+        stock_still = db.execute(
+            "SELECT available_litres FROM fuel_stock WHERE fuel_type = 'Diesel'"
+        ).fetchone()
+        assert float(stock_still["available_litres"]) == 500.0
+
+    client.post("/logout")
+    client.post(
+        "/login",
+        data={"username": "acct1", "password": "AccountantPass123!", "role": "accountant"},
+        follow_redirects=True,
+    )
+    accountant_approve = client.post(
+        f"/accountant/fuel-adjustment-requests/{rid}/approve",
+        data={"accountant_comments": "Invoices and dipstick variance validated."},
+        follow_redirects=True,
+    )
+    assert accountant_approve.status_code == 200
+    assert b"forwarded to admin" in accountant_approve.data
+
+    client.post("/logout")
+    client.post(
+        "/admin/login",
+        data={"username": "admin", "password": "admin#G06"},
+        follow_redirects=True,
+    )
+    ap = client.post(
+        f"/admin/fuel-adjustment-requests/{rid}/approve",
+        data={"admin_comments": "Final authorization granted."},
         follow_redirects=True,
     )
     assert ap.status_code == 200

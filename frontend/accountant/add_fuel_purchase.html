@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -78,7 +78,10 @@
                     </div>
                     <div class="field">
                         <label for="purchase_date">Purchase date</label>
-                        <input id="purchase_date" name="purchase_date" type="datetime-local" required>
+                        <input id="purchase_date" name="purchase_date" type="date" required
+                            value="{{ default_purchase_date }}">
+                        <p class="muted" style="margin:6px 0 0;font-size:12px;">Uses the station business day
+                            (Africa/Lusaka), matching &ldquo;Expenses Today&rdquo; on the dashboard.</p>
                     </div>
                     <div style="display:flex;gap:10px;flex-wrap:wrap;">
                         <button class="btn btn-primary" type="submit">Save purchase</button>
@@ -89,16 +92,6 @@
         </main>
     </div>
     <script src="{{ url_for('static', filename='js/fuel_purchase.js') }}"></script>
-    <script>
-        (function () {
-            var el = document.getElementById("purchase_date");
-            if (el && !el.value) {
-                var d = new Date();
-                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-                el.value = d.toISOString().slice(0, 16);
-            }
-        })();
-    </script>
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
 </body>
 

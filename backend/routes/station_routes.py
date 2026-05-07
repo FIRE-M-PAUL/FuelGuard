@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import csv
 import io
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 from flask import Response, flash, redirect, render_template, request, session, url_for
@@ -14,6 +14,7 @@ from backend.security.rbac import Permission, require_permissions
 from backend.services import audit_service
 from backend.services.logging_service import log_event
 from backend.security.session_manager import staff_login_required
+from backend.utils.timezone import now_cat, today_cat_iso
 
 
 @staff_bp.get("/analytics")
@@ -128,7 +129,7 @@ def sales_shift_end(shift_id: int):
 @staff_login_required
 @require_permissions(Permission.STATION_INSIGHTS)
 def export_shifts_csv():
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
     date_from = (request.args.get("from") or today).strip()
     date_to = (request.args.get("to") or today).strip()
     rows = station_model.list_shifts_between(date_from, date_to)
@@ -218,7 +219,7 @@ def accountant_expense_edit(expense_id: int):
         if category not in accounting_model.EXPENSE_CATEGORIES:
             category = "Other"
         if not date_str:
-            date_str = datetime.now(UTC).strftime("%Y-%m-%d")
+            date_str = now_cat().strftime("%Y-%m-%d")
         accounting_model.update_expense(
             expense_id,
             expense_name=name or description,

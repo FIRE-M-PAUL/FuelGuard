@@ -145,3 +145,30 @@ def test_admin_creates_user(client, admin_user):
         follow_redirects=False,
     )
     assert resp.status_code == 302
+
+
+def test_protected_url_redirects_without_session(client):
+    resp = client.get("/manager/dashboard", follow_redirects=False)
+    assert resp.status_code == 302
+    assert "/login" in (resp.headers.get("Location") or "")
+
+
+def test_admin_url_redirects_without_session(client):
+    resp = client.get("/admin/dashboard", follow_redirects=False)
+    assert resp.status_code == 302
+    assert "/admin/login" in (resp.headers.get("Location") or "")
+
+
+def test_logout_clears_session_cookie(client, sales_user):
+    login_resp = client.post(
+        "/login",
+        data={"username": "sales1", "password": "SalesPass123!"},
+        follow_redirects=False,
+    )
+    assert login_resp.status_code == 302
+
+    out = client.post("/logout", data={}, follow_redirects=False)
+    assert out.status_code == 302
+    set_cookie = out.headers.get("Set-Cookie", "")
+    assert "session=" in set_cookie
+    assert "Expires=Thu, 01 Jan 1970" in set_cookie

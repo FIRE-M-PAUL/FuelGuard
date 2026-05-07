@@ -19,21 +19,35 @@ from backend.services import validation_service
 from backend.security.session_manager import (
     admin_login_required,
     clear_failed_login,
+    clear_session,
+    establish_user_session,
     is_login_locked,
     register_failed_login,
-    refresh_session_activity,
     role_required,
 )
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
+def _with_auth_sync(url: str, *, sync: str) -> str:
+    sep = "&" if ("?" in url) else "?"
+    return f"{url}{sep}fg_auth_sync={sync}"
+
+
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        if session.get("user_id") and (session.get("role") or "").lower() == "admin":
-            return redirect(url_for("admin.dashboard"))
-        return render_template("shared/admin_login.html")
+        already = bool(session.get("user_id")) and (session.get("role") or "").lower() == "admin"
+        session_user = user_model.get_user_by_id(int(session["user_id"])) if already else None
+        if already and not session_user:
+            clear_session()
+            already = False
+        return render_template(
+            "shared/admin_login.html",
+            already_logged_in=already and session_user is not None,
+            session_username=session.get("username"),
+            continue_url=url_for("admin.dashboard") if already else None,
+        )
 
     username = (request.form.get("username") or "").strip()
     password = request.form.get("password") or ""
@@ -76,12 +90,11 @@ def login():
         flash("Account disabled.", "error")
         return render_template("shared/admin_login.html"), 403
 
-    session.clear()
-    session.permanent = True
-    session["user_id"] = user["id"]
-    session["username"] = user["username"]
-    session["role"] = "admin"
-    refresh_session_activity()
+    establish_user_session(
+        user_id=int(user["id"]),
+        username=str(user["username"]),
+        role="admin",
+    )
 
     log_event(f"Admin login success user_id={user['id']}")
     audit_service.record(
@@ -92,8 +105,8 @@ def login():
     )
     nxt = request.args.get("next")
     if nxt and nxt.startswith("/") and not nxt.startswith("//"):
-        return redirect(nxt)
-    return redirect(url_for("admin.dashboard"))
+        return redirect(_with_auth_sync(nxt, sync="1"))
+    return redirect(_with_auth_sync(url_for("admin.dashboard"), sync="1"))
 
 
 @admin_bp.route("/dashboard")

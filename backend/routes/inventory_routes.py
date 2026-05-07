@@ -1,4 +1,4 @@
-"""Fuel inventory API, stock views, and manager stock UI."""
+"""Fuel inventory API and stock reporting endpoints."""
 from __future__ import annotations
 
 import csv
@@ -6,9 +6,7 @@ import io
 
 from flask import Blueprint, Response, flash, jsonify, redirect, render_template, request, session, url_for
 
-from backend.models import fuel_model, fuel_sale_model, user_model
-from backend.routes.auth_routes import staff_bp
-from backend.security.rbac import Permission, require_permissions
+from backend.models import fuel_model
 from backend.services.logging_service import log_event
 from backend.services.validation_service import validate_fuel_payload
 from backend.security.session_manager import role_required, staff_login_required
@@ -127,16 +125,3 @@ def export_report():
     )
 
 
-@staff_bp.route("/manager/stock", methods=["GET"])
-@staff_login_required
-@require_permissions(Permission.MANAGER_PORTAL)
-def manager_stock():
-    user = user_model.get_user_by_id(int(session["user_id"]))
-    stock = fuel_sale_model.list_stock_for_manager()
-    return render_template(
-        "manager/inventory.html",
-        user=user,
-        role=session.get("role"),
-        stock=stock,
-        nav="stock",
-    )

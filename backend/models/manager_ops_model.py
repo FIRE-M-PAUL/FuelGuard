@@ -1,10 +1,10 @@
 """Aggregates and CSV exports for manager operational views."""
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
 
 from backend.models import fuel_model, fuel_sale_model
+from backend.utils.timezone import today_cat_iso
 
 
 def get_manager_dashboard_bundle() -> dict[str, Any]:
@@ -13,7 +13,7 @@ def get_manager_dashboard_bundle() -> dict[str, Any]:
     low_rows = [r for r in stock_rows if r["status"] in {"Low", "Critical"}]
     metrics = fuel_model.dashboard_metrics()
     recent_sales = fuel_sale_model.list_recent_retail_sales(limit=10)
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
     return {
         "today": today,
         "litres_sold_today": litres_today,

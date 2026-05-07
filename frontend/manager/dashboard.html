@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -48,8 +48,8 @@
             <article class="panel"
                 style="border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.08); margin-bottom: 14px;">
                 <h2 style="margin-top:0;">Low fuel level detected</h2>
-                <p class="muted" style="margin-bottom:8px;">One or more fuels are at or below minimum stock. Review the
-                    <a href="{{ url_for('staff.manager_stock') }}">fuel stock</a> page.</p>
+                <p class="muted" style="margin-bottom:8px;">One or more fuels are at or below minimum stock. Review fuel
+                    levels below.</p>
                 <ul style="margin:0; padding-left:1.2rem;">
                     {% for s in ops.low_fuel_rows %}
                     <li><strong>{{ s.fuel_type }}</strong>: {{ '%.2f'|format(s.available_litres) }} L available (min

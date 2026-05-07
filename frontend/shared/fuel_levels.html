@@ -21,23 +21,23 @@
                 {% include 'shared/accountant_nav.html' %}
             {% elif role == 'sales' %}
                 <nav class="side-links">
-                    <a href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
-                    <a href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
-                    <a href="{{ url_for('staff.sales_history') }}">Sales History</a>
-                    <a class="active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                    <a class="sidebar-btn" href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
+                    <a class="sidebar-btn" href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
+                    <a class="sidebar-btn" href="{{ url_for('staff.sales_history') }}">Sales History</a>
+                    <a class="sidebar-btn active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
                     <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="side-link-btn">Logout</button>
+                        <button type="submit" class="sidebar-btn sidebar-btn--logout">Logout</button>
                     </form>
                 </nav>
             {% else %}
                 <nav class="side-links">
-                    <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
-                    <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
-                    <a class="active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                    <a class="sidebar-btn" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                    <a class="sidebar-btn" href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                    <a class="sidebar-btn active" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
                     <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="side-link-btn">Logout</button>
+                        <button type="submit" class="sidebar-btn sidebar-btn--logout">Logout</button>
                     </form>
                 </nav>
             {% endif %}
@@ -96,7 +96,8 @@
                                 <td>{{ '%.2f'|format(r['requested_new_level']) }}</td>
                                 <td>
                                     {% set rs = (r['status'] or '')|upper %}
-                                    {% if rs == 'PENDING_VERIFICATION' %}<span class="status-pill" style="background:rgba(251,191,36,0.12);">Pending verification</span>
+                                    {% if rs == 'PENDING_ACCOUNTANT_REVIEW' %}<span class="status-pill" style="background:rgba(251,191,36,0.12);">Pending accountant review</span>
+                                    {% elif rs == 'PENDING_ADMIN_APPROVAL' %}<span class="status-pill" style="background:rgba(59,130,246,0.12);">Pending admin approval</span>
                                     {% elif rs == 'APPROVED' %}<span class="status-pill" style="background:rgba(34,197,94,0.15);">Approved</span>
                                     {% elif rs == 'REJECTED' %}<span class="status-pill" style="background:rgba(239,68,68,0.12);">Rejected</span>
                                     {% else %}{{ r['status'] }}{% endif %}

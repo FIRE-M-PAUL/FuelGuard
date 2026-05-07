@@ -34,6 +34,7 @@ import backend.routes.station_routes  # noqa: E402,F401
 import backend.routes.fuel_adjustment_routes  # noqa: E402,F401
 from backend.services.auth_service import hash_password  # noqa: E402
 from backend.services.logging_service import log_event  # noqa: E402
+from backend.security.session_manager import enforce_session_for_request  # noqa: E402
 
 
 def _seed_initial_admin(app: Flask) -> None:
@@ -98,6 +99,30 @@ def create_app(config_object: type | None = None) -> Flask:
     app.register_blueprint(admin_bp)
     app.register_blueprint(fuel_bp)
     app.register_blueprint(api_sec_bp)
+
+    @app.before_request
+    def _global_auth_guard():
+        path = request.path or "/"
+        if path.startswith("/static/"):
+            return None
+        if path in {"/", "/login", "/register", "/logout"}:
+            return None
+        if path.startswith("/login/") or path.endswith("/login"):
+            return None
+        if path.startswith("/register"):
+            return None
+        if path.startswith("/api/auth/"):
+            return None
+
+        # Enforce active session for all direct URL access under protected areas.
+        protected_prefixes = ("/sales", "/manager", "/accountant", "/fuel-levels", "/reports")
+        if path.startswith("/admin"):
+            if path in {"/admin/login", "/admin/login/"}:
+                return None
+            return enforce_session_for_request(admin_area=True)
+        if path.startswith(protected_prefixes):
+            return enforce_session_for_request(admin_area=False)
+        return None
 
     @app.get("/<path:filename>")
     def project_static_files(filename: str):

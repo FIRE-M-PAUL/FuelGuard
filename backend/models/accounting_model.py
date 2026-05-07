@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import UTC, datetime, timedelta
+from datetime import date, timedelta
 from typing import Any
 
 from backend.models.fuel_sale_model import ALLOWED_FUEL_TYPES
 from backend.models.user_model import get_db
+from backend.utils.timezone import date_days_ago_cat_iso, now_cat, today_cat_iso
 
 EXPENSE_CATEGORIES = frozenset(
     {"Fuel Purchase", "Maintenance", "Salary", "Utilities", "Other"}
@@ -198,7 +199,25 @@ def total_expenses_filtered(
         f"SELECT COALESCE(SUM(amount), 0) AS s FROM expenses WHERE {where}",
         params,
     ).fetchone()
-    return float(row["s"] or 0) if row else 0.0
+    manual = float(row["s"] or 0) if row else 0.0
+    if category and category != "Fuel Purchase":
+        return manual
+
+    p_clauses: list[str] = ["1=1"]
+    p_params: list[Any] = []
+    if date_from:
+        p_clauses.append("date(purchase_date) >= date(?)")
+        p_params.append(date_from)
+    if date_to:
+        p_clauses.append("date(purchase_date) <= date(?)")
+        p_params.append(date_to)
+    p_where = " AND ".join(p_clauses)
+    prow = db.execute(
+        f"SELECT COALESCE(SUM(total_cost), 0) AS s FROM fuel_purchases WHERE {p_where}",
+        p_params,
+    ).fetchone()
+    purchases = float(prow["s"] or 0) if prow else 0.0
+    return manual + purchases
 
 
 def get_expense(expense_id: int) -> sqlite3.Row | None:
@@ -248,6 +267,22 @@ def total_fuel_purchase_cost_between(date_from: str, date_to: str) -> float:
     return float(row["s"]) if row else 0.0
 
 
+def normalize_fuel_purchase_calendar_date(raw: str) -> tuple[str | None, str | None]:
+    """Coerce ``date`` / ``datetime-local`` form values to ``YYYY-MM-DD`` (station calendar day)."""
+    s = (raw or "").strip()
+    if not s:
+        return None, "Purchase date is required."
+    if "T" in s:
+        s = s.split("T", 1)[0].strip()
+    elif len(s) > 10 and s[10] == " ":
+        s = s[:10].strip()
+    try:
+        date.fromisoformat(s)
+    except ValueError:
+        return None, "Invalid purchase date."
+    return s, None
+
+
 def record_fuel_purchase(
     *,
     supplier_name: str,
@@ -258,6 +293,11 @@ def record_fuel_purchase(
     purchase_date: str,
     recorded_by: int,
 ) -> tuple[int | None, str | None]:
+    norm_date, date_err = normalize_fuel_purchase_calendar_date(purchase_date)
+    if date_err or not norm_date:
+        return None, date_err or "Invalid purchase date."
+    purchase_date = norm_date
+
     if fuel_type not in ALLOWED_FUEL_TYPES:
         return None, "Invalid fuel type."
     expected = round(quantity * price_per_litre, 2)
@@ -337,6 +377,7 @@ def total_revenue_between(date_from: str, date_to: str) -> float:
 
 
 def total_expenses_between(date_from: str, date_to: str) -> float:
+    """Manual expenses plus fuel purchase costs (recorded under Fuel Purchases)."""
     db = get_db()
     row = db.execute(
         """
@@ -346,7 +387,8 @@ def total_expenses_between(date_from: str, date_to: str) -> float:
         """,
         (date_from, date_to),
     ).fetchone()
-    return float(row["s"]) if row else 0.0
+    manual = float(row["s"] or 0) if row else 0.0
+    return manual + total_fuel_purchase_cost_between(date_from, date_to)
 
 
 def count_sales_between(date_from: str, date_to: str) -> int:
@@ -376,21 +418,23 @@ def total_purchased_litres_between(date_from: str, date_to: str) -> float:
 
 def payment_method_summary_today() -> list[sqlite3.Row]:
     db = get_db()
+    today = today_cat_iso()
     return db.execute(
         """
         SELECT payment_method, COUNT(*) AS cnt, COALESCE(SUM(total_amount), 0) AS total
         FROM fuel_sales
-        WHERE date(sale_date) = date('now')
+        WHERE date(sale_date) = date(?)
         GROUP BY payment_method
         ORDER BY total DESC
-        """
+        """,
+        (today,),
     ).fetchall()
 
 
 def daily_series_last_days(days: int = 7) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Revenue and expense totals per day for simple charts."""
     db = get_db()
-    start = (datetime.now(UTC).date() - timedelta(days=days - 1)).isoformat()
+    start = date_days_ago_cat_iso(days - 1)
     rev_rows = db.execute(
         """
         SELECT date(sale_date) AS d, COALESCE(SUM(total_amount), 0) AS total
@@ -409,12 +453,24 @@ def daily_series_last_days(days: int = 7) -> tuple[list[dict[str, Any]], list[di
         """,
         (start,),
     ).fetchall()
+    pur_rows = db.execute(
+        """
+        SELECT date(purchase_date) AS d, COALESCE(SUM(total_cost), 0) AS total
+        FROM fuel_purchases
+        WHERE date(purchase_date) >= date(?)
+        GROUP BY date(purchase_date)
+        """,
+        (start,),
+    ).fetchall()
     rev_map = {r["d"]: float(r["total"]) for r in rev_rows}
     exp_map = {r["d"]: float(r["total"]) for r in exp_rows}
+    for r in pur_rows:
+        d = r["d"]
+        exp_map[d] = exp_map.get(d, 0.0) + float(r["total"] or 0)
     out_rev: list[dict[str, Any]] = []
     out_exp: list[dict[str, Any]] = []
     for i in range(days):
-        d = (datetime.now(UTC).date() - timedelta(days=days - 1 - i)).isoformat()
+        d = (now_cat().date() - timedelta(days=days - 1 - i)).isoformat()
         out_rev.append({"day": d, "total": rev_map.get(d, 0.0)})
         out_exp.append({"day": d, "total": exp_map.get(d, 0.0)})
     return out_rev, out_exp
@@ -461,8 +517,8 @@ def recent_mixed_activity(*, limit: int = 12) -> list[dict[str, Any]]:
 
 def get_finance_snapshot() -> dict[str, Any]:
     """Single-day and rolling figures for accountant dashboard."""
-    today = datetime.now(UTC).date().isoformat()
-    month_start = datetime.now(UTC).date().replace(day=1).isoformat()
+    today = today_cat_iso()
+    month_start = now_cat().date().replace(day=1).isoformat()
     revenue_today = total_revenue_between(today, today)
     expenses_today = total_expenses_between(today, today)
     profit_today = revenue_today - expenses_today

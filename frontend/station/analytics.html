@@ -33,7 +33,7 @@
             </header>
 
             {% if alerts %}
-            <article class="panel" style="margin-bottom:14px;">
+            <article class="panel" style="margin-bottom:14px;" data-fg-notification-panel>
                 <h2 style="margin-top:0;">Notifications</h2>
                 <ul class="flash-list" style="margin:0;">
                     {% for a in alerts %}
@@ -54,9 +54,8 @@
                 <article class="metric"><div class="k">Sales today</div><div class="v">{{ data.sales_count_today }}</div></article>
                 <article class="metric"><div class="k">Revenue today</div><div class="v">K{{ '%.2f'|format(data.revenue_today) }}</div></article>
                 <article class="metric"><div class="k">Fuel sold today (L)</div><div class="v">{{ '%.2f'|format(data.litres_sold_today) }}</div></article>
-                <article class="metric"><div class="k">Expenses today</div><div class="v">K{{ '%.2f'|format(data.expenses_today) }}</div></article>
+                <article class="metric"><div class="k">Expenses today <span class="muted" style="font-weight:400;font-size:0.82em;">(incl. fuel purchases)</span></div><div class="v">K{{ '%.2f'|format(data.expenses_today) }}</div></article>
                 <article class="metric"><div class="k">Net today</div><div class="v" style="color:{% if data.profit_today >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.profit_today) }}</div></article>
-                <article class="metric"><div class="k">Net (incl. fuel purchases) today</div><div class="v" style="color:{% if data.net_after_purchases_today >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.net_after_purchases_today) }}</div></article>
             </section>
 
             {% if data.low_fuel_warning %}
@@ -68,8 +67,8 @@
             {% endif %}
 
             <section class="metrics" style="grid-template-columns:repeat(3,minmax(0,1fr));">
-                <article class="metric"><div class="k">Monthly net (sales − expenses)</div><div class="v" style="color:{% if data.monthly_profit >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.monthly_profit) }}</div></article>
-                <article class="metric"><div class="k">Monthly net (incl. purchases)</div><div class="v" style="color:{% if data.net_after_purchases_month >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.net_after_purchases_month) }}</div></article>
+                <article class="metric"><div class="k">Monthly net profit</div><div class="v" style="color:{% if data.monthly_profit >= 0 %}var(--success){% else %}var(--danger){% endif %}">K{{ '%.2f'|format(data.monthly_profit) }}</div></article>
+                <article class="metric"><div class="k">Monthly expenses <span class="muted" style="font-weight:400;font-size:0.82em;">(incl. fuel purchases)</span></div><div class="v">K{{ '%.2f'|format(data.monthly_expenses) }}</div></article>
                 <article class="metric"><div class="k">Top fuel (this month)</div><div class="v">{{ data.top_fuel_type or '—' }} · {{ '%.0f'|format(data.top_fuel_litres) }} L</div></article>
             </section>
 

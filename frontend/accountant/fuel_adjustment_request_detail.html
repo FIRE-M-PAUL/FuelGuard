@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include 'shared/theme_init.html' %}
-    <title>Adjustment request #{{ req['id'] }} — FuelGuard</title>
+    <title>Verify request #{{ req['id'] }} — FuelGuard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
@@ -13,18 +13,15 @@
         <aside class="dash-side">
             <div class="side-brand">
                 {% include 'shared/brand_logo.html' %}
-                <div><div class="side-meta">Admin Control</div></div>
+                <div><div class="side-meta">Accounting Control</div></div>
             </div>
-            <nav class="side-links">
-                <a class="sidebar-btn" href="{{ url_for('admin.dashboard') }}">User Directory</a>
-                <a class="sidebar-btn active" href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
-            </nav>
-            <div class="side-meta">Signed in as {{ username }}</div>
+            {% include 'shared/accountant_nav.html' %}
+            <div class="side-meta">Signed in as {{ user['username'] }}</div>
         </aside>
         <main class="dash-content">
             <header class="dash-top">
                 <div class="title-group">
-                    <h1>Request #{{ req['id'] }}</h1>
+                    <h1>Verify request #{{ req['id'] }}</h1>
                     <div class="meta">Status: {{ req['status'] }}</div>
                 </div>
                 <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
@@ -43,38 +40,24 @@
                 <p><strong>Level at submission (L):</strong> {{ '%.2f'|format(req['previous_level']) }}</p>
                 <p><strong>Requested new level (L):</strong> {{ '%.2f'|format(req['requested_new_level']) }}</p>
                 <p><strong>Manager:</strong> {{ req['requested_by_username'] }}</p>
-                <p><strong>Accountant review:</strong> {{ req['accountant_reviewed_by_username'] or '—' }}</p>
-                <p><strong>Accountant comments:</strong> {{ req['accountant_comments'] or '—' }}</p>
                 <p><strong>Reason:</strong> {{ req['reason'] }}</p>
                 <p><strong>Submitted:</strong> {{ req['date_created'] }}</p>
             </article>
 
             <article class="panel" style="max-width:560px;">
-                <h2>Approve</h2>
-                <p class="muted">Updates live stock to the requested level and logs an applied adjustment.</p>
-                <form method="post" action="{{ url_for('admin.admin_fuel_adjustment_request_approve', request_id=req['id']) }}" onsubmit="return confirm('Approve and apply this level to stock?');">
+                <h2>Verify and forward to admin</h2>
+                <p class="muted">Admin will perform the final approval and apply stock updates.</p>
+                <form method="post" action="{{ url_for('staff.accountant_fuel_adjustment_request_approve', request_id=req['id']) }}" onsubmit="return confirm('Verify and forward this request to admin?');">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="field">
-                        <label for="approve_comments">Admin comments (required)</label>
-                        <textarea id="approve_comments" name="admin_comments" required maxlength="2000"></textarea>
+                        <label for="accountant_comments">Accountant comments (required)</label>
+                        <textarea id="accountant_comments" name="accountant_comments" required maxlength="2000"></textarea>
                     </div>
-                    <button class="btn btn-primary" type="submit">Approve</button>
+                    <button class="btn btn-primary" type="submit">Verify & forward</button>
                 </form>
             </article>
 
-            <article class="panel" style="max-width:560px;">
-                <h2>Reject</h2>
-                <form method="post" action="{{ url_for('admin.admin_fuel_adjustment_request_reject', request_id=req['id']) }}" onsubmit="return confirm('Reject this request?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="field">
-                        <label for="reject_comments">Admin comments (required)</label>
-                        <textarea id="reject_comments" name="admin_comments" required maxlength="2000"></textarea>
-                    </div>
-                    <button class="btn btn-secondary" type="submit" style="border-color:var(--danger);color:var(--danger);">Reject</button>
-                </form>
-            </article>
-
-            <p><a href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">← Back to list</a></p>
+            <p><a href="{{ url_for('staff.accountant_fuel_adjustment_requests') }}">← Back to queue</a></p>
         </main>
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>

@@ -1,7 +1,42 @@
 <script>
     (function () {
-        var savedTheme = localStorage.getItem("theme") || localStorage.getItem("fuelguard-theme");
+        var THEME_KEY = "theme";
+        var LEGACY_THEME_KEY = "fuelguard-theme";
+        var AUTH_REV_KEY = "fg_auth_rev";
+        var savedTheme = null;
+        try {
+            savedTheme = sessionStorage.getItem(THEME_KEY) || sessionStorage.getItem(LEGACY_THEME_KEY);
+        } catch (e) { savedTheme = null; }
+        if (!savedTheme) {
+            try {
+                savedTheme = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
+                if (savedTheme) {
+                    try {
+                        sessionStorage.setItem(THEME_KEY, savedTheme);
+                        sessionStorage.setItem(LEGACY_THEME_KEY, savedTheme);
+                    } catch (e2) { /* ignore */ }
+                }
+            } catch (e3) { savedTheme = null; }
+        }
         var initialTheme = savedTheme === "dark" ? "dark" : "light";
         document.documentElement.setAttribute("data-theme", initialTheme);
+
+        try {
+            window.addEventListener("storage", function (ev) {
+                if (ev.key !== AUTH_REV_KEY || ev.newValue === null) return;
+                var path = location.pathname || "";
+                var staffProtected =
+                    path.indexOf("/sales") === 0 ||
+                    path.indexOf("/manager") === 0 ||
+                    path.indexOf("/accountant") === 0 ||
+                    path.indexOf("/fuel-levels") === 0 ||
+                    path.indexOf("/reports") === 0;
+                var adminProtected =
+                    path.indexOf("/admin") === 0 && path.indexOf("/admin/login") !== 0;
+                if (staffProtected || adminProtected) {
+                    location.reload();
+                }
+            });
+        } catch (e4) { /* ignore */ }
     })();
 </script>

@@ -36,7 +36,7 @@
             {% endif %}{% endwith %}
 
             <article class="panel" style="max-width:640px;">
-                <p class="muted" style="margin-top:0;">Submit a proposed tank reading. An <strong>admin</strong> must approve before stock changes. Routine fuel deliveries should be recorded under <strong>Accountant → Fuel Purchases</strong> (record fuel delivery), not here.</p>
+                <p class="muted" style="margin-top:0;">Submit a proposed tank reading. An <strong>accountant</strong> verifies first, then <strong>admin</strong> gives final approval before stock changes. Routine fuel deliveries should be recorded under <strong>Accountant → Fuel Purchases</strong> (record fuel delivery), not here.</p>
                 <form method="post" action="{{ url_for('staff.manager_fuel_adjustment_request_new') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="field">
@@ -66,7 +66,7 @@
                         <label for="reason">Reason (required)</label>
                         <textarea id="reason" name="reason" required maxlength="1000" placeholder="e.g. dipstick reconciliation, gauge fault, post-delivery correction"></textarea>
                     </div>
-                    <button class="btn btn-primary" type="submit" onclick="return confirm('Submit this adjustment request for admin approval? Stock will not change until approved.');">Submit request</button>
+                    <button class="btn btn-primary" type="submit" onclick="return confirm('Submit this adjustment request for accountant verification, then admin final approval? Stock will not change until final approval.');">Submit request</button>
                     <a class="btn btn-secondary" href="{{ url_for('staff.fuel_levels_dashboard') }}" style="margin-left:8px;">Cancel</a>
                 </form>
             </article>

@@ -1,20 +1,22 @@
-﻿<nav class="side-links">
-    <a class="{{ 'active' if nav == 'dashboard' else '' }}"
+<nav class="side-links">
+    <a class="sidebar-btn{{ ' active' if nav == 'dashboard' else '' }}"
         href="{{ url_for('staff.accountant_dashboard') }}">Dashboard</a>
-    <a class="{{ 'active' if nav == 'analytics' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'analytics' else '' }}"
         href="{{ url_for('staff.station_analytics') }}">Analytics</a>
-    <a class="{{ 'active' if nav == 'payments' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'payments' else '' }}"
         href="{{ url_for('staff.accountant_payments') }}">Payment Records</a>
-    <a class="{{ 'active' if nav == 'expenses' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'expenses' else '' }}"
         href="{{ url_for('staff.accountant_expenses') }}">Expenses</a>
-    <a class="{{ 'active' if nav == 'purchases' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'purchases' else '' }}"
         href="{{ url_for('staff.accountant_purchases') }}">Fuel Purchases</a>
-    <a class="{{ 'active' if nav == 'fuel-levels' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'fuel-adjustments' else '' }}"
+        href="{{ url_for('staff.accountant_fuel_adjustment_requests') }}">Fuel Adjustments</a>
+    <a class="sidebar-btn{{ ' active' if nav == 'fuel-levels' else '' }}"
         href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-    <a class="{{ 'active' if nav == 'reports-classic' else '' }}"
+    <a class="sidebar-btn{{ ' active' if nav == 'reports-classic' else '' }}"
         href="{{ url_for('staff.accountant_reports') }}">Report tools</a>
     <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" class="side-link-btn">Logout</button>
+        <button type="submit" class="sidebar-btn sidebar-btn--logout">Logout</button>
     </form>
 </nav>

@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import UTC, datetime
 from typing import Any
 
 from backend.models.user_model import get_db
+from backend.utils.timezone import date_days_ago_cat_iso, now_cat_str, today_cat_iso
 
 ALLOWED_FUEL_TYPES = frozenset({"Petrol", "Diesel"})
 ALLOWED_PAYMENT_METHODS = frozenset({"Cash", "Mobile Money", "Card"})
@@ -204,6 +204,7 @@ def list_stock_for_manager() -> list[dict[str, Any]]:
 def fuel_levels_monitoring_snapshot() -> list[dict[str, Any]]:
     """Fuel level and 7-day burn-rate estimates for dashboard visualisation."""
     db = get_db()
+    start_date_7d = date_days_ago_cat_iso(6)
     rows = db.execute(
         """
         SELECT
@@ -217,12 +218,12 @@ def fuel_levels_monitoring_snapshot() -> list[dict[str, Any]]:
                 SELECT SUM(s.quantity)
                 FROM fuel_sales s
                 WHERE s.fuel_type = fs.fuel_type
-                AND date(s.sale_date) >= date('now', '-6 day')
+                AND date(s.sale_date) >= date(?)
             ), 0) AS total_7d_consumption
         FROM fuel_stock fs
         ORDER BY fs.fuel_type COLLATE NOCASE
         """,
-        (DEFAULT_TANK_CAPACITY_LITRES, DEFAULT_MINIMUM_LITRES),
+        (DEFAULT_TANK_CAPACITY_LITRES, DEFAULT_MINIMUM_LITRES, start_date_7d),
     ).fetchall()
 
     output: list[dict[str, Any]] = []
@@ -266,7 +267,7 @@ def fuel_levels_monitoring_snapshot() -> list[dict[str, Any]]:
 
 
 def retail_sales_summary_today() -> tuple[float, int]:
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
     db = get_db()
     row = db.execute(
         """
@@ -476,7 +477,7 @@ def set_payment_verified(sale_id: int, *, verified_by: int, verified: bool = Tru
     cur = db.execute("SELECT id FROM fuel_sales WHERE id = ?", (sale_id,))
     if not cur.fetchone():
         return False
-    when = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S") if verified else None
+    when = now_cat_str() if verified else None
     db.execute(
         """
         UPDATE fuel_sales
@@ -514,7 +515,7 @@ def record_sale(
     if abs(expected - round(total_amount, 2)) > 0.02:
         return None, "Total amount does not match quantity and price."
 
-    when = sale_date or datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    when = sale_date or now_cat_str()
     db = get_db()
     try:
         db.execute("BEGIN IMMEDIATE")

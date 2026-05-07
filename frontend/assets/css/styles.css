@@ -236,40 +236,85 @@ input:focus, select:focus {
     place-items: unset;
     flex-shrink: 0;
 }
+/* Sidebar nav: one shared control style (links + logout) */
 .side-links {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
 }
-.side-links a {
+
+.side-links .sidebar-btn {
     display: flex;
     align-items: center;
-    color: var(--sidebar-link);
-    padding: 10px 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 16px;
     border-radius: 10px;
-    margin-bottom: 6px;
-    min-height: 44px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1.25;
+    color: var(--sidebar-link);
+    background: transparent;
+    border: 1px solid transparent;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 0;
 }
-.side-links a.active, .side-links a:hover { background: var(--sidebar-hover-bg); color: #fff; }
-.side-links form.side-logout { margin: 0; }
-.side-links button.side-link-btn {
-    display: flex; align-items: center; width: 100%; text-align: left;
-    background: none; border: none; cursor: pointer;
-    font: inherit; color: var(--sidebar-link);
-    padding: 10px 12px; border-radius: 10px; margin-bottom: 6px;
-    min-height: 44px;
+
+.side-links .sidebar-btn:hover,
+.side-links .sidebar-btn:focus-visible {
+    background: var(--sidebar-hover-bg);
+    color: #fff;
+    outline: none;
 }
+
+.side-links .sidebar-btn.active {
+    background: var(--sidebar-hover-bg);
+    color: #fff;
+}
+
 .side-links form.side-logout {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: block;
     flex-shrink: 0;
 }
-.side-links button.side-link-btn:hover {
-    background: var(--sidebar-hover-bg); color: #fff;
+
+.side-links .sidebar-btn--logout {
+    background: color-mix(in oklab, var(--danger), transparent 86%);
+    border-color: color-mix(in oklab, var(--danger), transparent 62%);
+    color: #fff;
+}
+
+.side-links .sidebar-btn--logout:hover,
+.side-links .sidebar-btn--logout:focus-visible {
+    background: color-mix(in oklab, var(--danger), transparent 72%);
+    border-color: color-mix(in oklab, var(--danger), transparent 48%);
+    color: #fff;
 }
 .field-like {
     padding: 10px 12px; border-radius: 10px; border: 1px solid var(--stroke);
     background: var(--panel); color: var(--text);
     font: inherit;
 }
-.side-meta { margin-top: 20px; font-size: 12px; color: var(--sidebar-muted); line-height: 1.6; }
+.side-meta { font-size: 12px; color: var(--sidebar-muted); line-height: 1.6; }
+
+.dash-side > .side-meta {
+    margin-top: 18px;
+}
+
+.side-brand .side-meta {
+    margin-top: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
 
 .dash-content {
     padding: 26px;
@@ -279,6 +324,28 @@ input:focus, select:focus {
     display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px;
     flex-wrap: wrap;
 }
+
+/* Header action cluster: theme toggle + logout / buttons — aligned row, no overlap */
+.dash-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.theme-toggle-host {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.icon-with-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .title-group h1 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.8rem); }
 .meta { color: var(--muted); font-size: 14px; margin-top: 4px; }
 
@@ -402,18 +469,18 @@ tbody tr:hover { background: color-mix(in oklab, var(--panel), var(--secondary) 
         padding-left: 6px;
         padding-right: 6px;
     }
-    .side-links a,
-    .side-links button.side-link-btn {
+    .side-links .sidebar-btn {
         flex: 0 0 auto;
+        width: auto;
         white-space: nowrap;
-        margin-bottom: 0;
         scroll-snap-align: start;
-        padding: 10px 14px;
+        padding: 12px 14px;
     }
     .side-links form.side-logout {
         flex: 0 0 auto;
+        width: auto;
     }
-    .side-links form.side-logout .side-link-btn {
+    .side-links form.side-logout .sidebar-btn--logout {
         width: auto;
         min-width: 88px;
     }
@@ -428,6 +495,11 @@ tbody tr:hover { background: color-mix(in oklab, var(--panel), var(--secondary) 
         align-items: stretch;
     }
     .dash-top .title-group { width: 100%; }
+    .dash-header-actions {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start;
+    }
     .dash-top form { width: 100%; margin: 0; }
     .dash-top .btn { width: 100%; justify-content: center; }
     .panel { padding: 14px; border-radius: 14px; }
@@ -493,10 +565,6 @@ tbody tr:hover { background: color-mix(in oklab, var(--panel), var(--secondary) 
 }
 
 .theme-toggle {
-    position: fixed;
-    right: 16px;
-    top: 16px;
-    z-index: 1100;
     border: 1px solid var(--stroke);
     background: color-mix(in oklab, var(--panel), #fff 8%);
     color: var(--text);
@@ -509,12 +577,28 @@ tbody tr:hover { background: color-mix(in oklab, var(--panel), var(--secondary) 
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
-    box-shadow: var(--shadow);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: transform .2s ease, background-color .2s ease, border-color .2s ease;
 }
+
+.theme-toggle--inline {
+    position: static;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(15, 35, 70, 0.1);
+}
+
+.theme-toggle--floating {
+    position: fixed;
+    z-index: 1100;
+    bottom: 22px;
+    right: 18px;
+    top: auto;
+    left: auto;
+    box-shadow: var(--shadow);
+}
+
 .theme-toggle:hover {
     transform: translateY(-1px);
 }

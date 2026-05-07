@@ -417,37 +417,6 @@ h1 {
     }
 }
 
-.theme-toggle {
-    position: fixed;
-    right: 16px;
-    top: 16px;
-    z-index: 1100;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--text-dark);
-    border-radius: 999px;
-    padding: 0;
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
-    font: inherit;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform .2s ease, background-color .2s ease, border-color .2s ease;
-}
-.theme-toggle:hover {
-    transform: translateY(-1px);
-}
-.theme-toggle:focus-visible {
-    outline: 2px solid var(--secondary);
-    outline-offset: 2px;
-}
-
 @media (max-width: 520px) {
     .container {
         width: min(1120px, 94%);

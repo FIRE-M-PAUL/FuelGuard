@@ -3,10 +3,10 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import UTC, datetime
 from typing import Any
 
 from backend.models.user_model import get_db
+from backend.utils.timezone import now_cat_str
 
 DEFAULT_STATION_NAME = "FuelGuard Station"
 LARGE_SALE_THRESHOLD = 10_000.0
@@ -119,7 +119,7 @@ def start_shift(
     if get_open_shift(user_id):
         return None, "You already have an open shift. End it before starting a new one."
     db = get_db()
-    when = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    when = now_cat_str()
     cur = db.execute(
         """
         INSERT INTO shifts (user_id, status, started_at, opening_meter, opening_cash, notes)
@@ -149,7 +149,7 @@ def end_shift(
         return False, "Shift not found or already closed."
     if closing_meter < float(row["opening_meter"]):
         return False, "Closing meter must be greater than or equal to opening meter."
-    when = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    when = now_cat_str()
     prior_notes = (row["notes"] or "").strip()
     close_note = (notes or "").strip()
     if close_note:
@@ -176,7 +176,7 @@ def shift_sales_summary(shift_id: int) -> dict[str, Any]:
         return {"litres": 0.0, "revenue": 0.0, "transactions": 0}
     uid = int(sh["user_id"])
     start = sh["started_at"]
-    end = sh["ended_at"] or datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    end = sh["ended_at"] or now_cat_str()
     row = db.execute(
         """
         SELECT COALESCE(SUM(quantity), 0) AS litres,
@@ -281,7 +281,7 @@ def list_recent_alerts(*, limit: int = 25, include_acknowledged: bool = False) -
 
 def acknowledge_alert(alert_id: int) -> bool:
     db = get_db()
-    when = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    when = now_cat_str()
     cur = db.execute(
         "UPDATE alerts SET acknowledged_at = ? WHERE id = ? AND acknowledged_at IS NULL",
         (when, alert_id),
@@ -322,7 +322,7 @@ def reconcile_low_fuel_alert(fuel_type: str, available: float, minimum: float) -
         maybe_alert_low_fuel(fuel_type, available, minimum)
         return
     db = get_db()
-    when = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
+    when = now_cat_str()
     db.execute(
         """
         UPDATE alerts

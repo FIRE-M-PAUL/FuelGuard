@@ -16,11 +16,11 @@
                 <div><div class="side-meta">Admin Control</div></div>
             </div>
             <nav class="side-links">
-                <a href="{{ url_for('admin.dashboard') }}">User Directory</a>
-                <a class="active" href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
-                <a href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
-                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a class="sidebar-btn active" href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
             </nav>
             <div class="side-meta">Signed in as {{ username }}</div>
         </aside>
@@ -28,7 +28,7 @@
             <header class="dash-top">
                 <div class="title-group">
                     <h1>Fuel level adjustment requests</h1>
-                    <div class="meta">Pending admin decision (PENDING_VERIFICATION)</div>
+                    <div class="meta">Pending final admin decision (after accountant verification)</div>
                 </div>
                 <form method="post" action="{{ url_for('staff.logout') }}" style="margin:0;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -42,7 +42,7 @@
             {% endif %}{% endwith %}
 
             <article class="panel">
-                <p class="muted" style="margin-top:0;">Approving applies the requested reading to <code>fuel_stock</code> and writes an audit row. Rejecting leaves stock unchanged.</p>
+                <p class="muted" style="margin-top:0;">These requests were verified by accounting. Final admin approval applies the requested reading to <code>fuel_stock</code>; rejecting leaves stock unchanged.</p>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -52,6 +52,7 @@
                                 <th>Current at request (L)</th>
                                 <th>Requested (L)</th>
                                 <th>Manager</th>
+                                <th>Verified by</th>
                                 <th>Submitted</th>
                                 <th></th>
                             </tr>
@@ -64,11 +65,12 @@
                                 <td>{{ '%.2f'|format(r['previous_level']) }}</td>
                                 <td>{{ '%.2f'|format(r['requested_new_level']) }}</td>
                                 <td>{{ r['requested_by_username'] }}</td>
+                                <td>{{ r['accountant_reviewed_by_username'] or '—' }}</td>
                                 <td>{{ r['date_created'] }}</td>
                                 <td><a class="btn btn-primary" style="padding:.35rem .75rem;font-size:.85rem;" href="{{ url_for('admin.admin_fuel_adjustment_request_detail', request_id=r['id']) }}">Review</a></td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="7" class="muted">No pending adjustment requests.</td></tr>
+                            <tr><td colspan="8" class="muted">No requests waiting for final admin approval.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>

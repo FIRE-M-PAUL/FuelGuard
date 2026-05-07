@@ -13,14 +13,14 @@
         <aside class="dash-side">
             <div class="side-brand">{% include 'shared/brand_logo.html' %}<div><div class="side-meta">Counter</div></div></div>
             <nav class="side-links">
-                <a href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
-                <a href="{{ url_for('staff.sales_history') }}">Sales History</a>
-                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-                <a class="active" href="{{ url_for('staff.sales_shifts') }}">Shifts</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sales_history') }}">Sales History</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                <a class="sidebar-btn active" href="{{ url_for('staff.sales_shifts') }}">Shifts</a>
                 <form method="post" action="{{ url_for('staff.logout') }}" class="side-logout">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="side-link-btn">Logout</button>
+                    <button type="submit" class="sidebar-btn sidebar-btn--logout">Logout</button>
                 </form>
             </nav>
             <div class="side-meta">{{ user['email'] or '—' }}</div>

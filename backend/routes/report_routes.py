@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import csv
 import io
-from datetime import UTC, datetime
+from datetime import datetime
 
 from flask import Response, flash, redirect, render_template, request, session, url_for
 
@@ -20,6 +20,7 @@ from backend.security.rbac import Permission, require_permissions
 from backend.services import audit_service
 from backend.services.logging_service import log_event
 from backend.security.session_manager import role_required, staff_login_required
+from backend.utils.timezone import now_cat, today_cat_iso
 
 
 @staff_bp.route("/manager/dashboard")
@@ -139,7 +140,7 @@ def manager_shifts():
 @require_permissions(Permission.MANAGER_PORTAL)
 def manager_reports():
     user = user_model.get_user_by_id(int(session["user_id"]))
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
     return render_template(
         "manager/reports.html",
         user=user,
@@ -154,7 +155,7 @@ def manager_reports():
 @require_permissions(Permission.MANAGER_PORTAL)
 def manager_reports_export():
     kind = (request.args.get("kind") or "daily_sales").strip()
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
 
     if kind == "daily_sales":
         day = (request.args.get("date") or today).strip()
@@ -278,7 +279,7 @@ def accountant_expenses():
         if category not in accounting_model.EXPENSE_CATEGORIES:
             category = "Other"
         if not date_str:
-            date_str = datetime.now(UTC).strftime("%Y-%m-%d")
+            date_str = now_cat().strftime("%Y-%m-%d")
         eid = accounting_model.add_expense(
             expense_name=expense_name or None,
             description=description,
@@ -389,6 +390,7 @@ def accountant_purchases_add():
         user=user,
         role=session.get("role"),
         nav="purchases",
+        default_purchase_date=today_cat_iso(),
     )
 
 
@@ -397,7 +399,7 @@ def accountant_purchases_add():
 @require_permissions(Permission.ACCOUNTANT_PORTAL)
 def accountant_reports():
     user = user_model.get_user_by_id(int(session["user_id"]))
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
     return render_template(
         "accountant/financial_reports.html",
         user=user,
@@ -412,7 +414,7 @@ def accountant_reports():
 @require_permissions(Permission.ACCOUNTANT_PORTAL)
 def accountant_reports_export():
     kind = (request.args.get("kind") or "daily_sales").strip()
-    today = datetime.now(UTC).date().isoformat()
+    today = today_cat_iso()
 
     if kind == "daily_sales":
         day = (request.args.get("date") or today).strip()
@@ -423,7 +425,7 @@ def accountant_reports_export():
         try:
             y, m = int(ym[:4]), int(ym[5:7])
         except (ValueError, IndexError):
-            y, m = datetime.now(UTC).year, datetime.now(UTC).month
+            y, m = now_cat().year, now_cat().month
         rows = accounting_model.export_monthly_revenue_rows(y, m)
         filename = f"monthly_revenue_{y:04d}_{m:02d}.csv"
     elif kind == "expenses":

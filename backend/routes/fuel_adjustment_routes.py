@@ -1,18 +1,18 @@
-"""Fuel level adjustment requests: manager submits, admin approves (stock changes only after approval)."""
+"""Fuel level adjustment requests: manager submits, accountant verifies, admin finalizes."""
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 
 from flask import flash, redirect, render_template, request, session, url_for
 
 from backend.models import fuel_adjustment_request_model, fuel_sale_model, user_model
-from backend.models.fuel_adjustment_request_model import STATUS_PENDING_VERIFICATION
 from backend.routes.auth_routes import staff_bp
 from backend.routes.user_routes import admin_bp
 from backend.security.rbac import Permission, require_permissions
 from backend.security.session_manager import admin_login_required, role_required, staff_login_required
 from backend.services import audit_service
 from backend.services.logging_service import log_event
+from backend.utils.timezone import now_cat
 
 
 def _adjustment_alert(*, alert_type: str, message: str, meta: dict | None = None) -> None:
@@ -58,13 +58,16 @@ def manager_fuel_adjustment_request_new():
         )
         _adjustment_alert(
             alert_type="fuel_adjustment_pending",
-            message=f"Fuel level adjustment request #{rid} ({fuel_type}) awaits admin approval.",
+            message=f"Fuel level adjustment request #{rid} ({fuel_type}) awaits accountant verification.",
             meta={"request_id": rid},
         )
-        flash("Adjustment request submitted for admin approval. Stock is unchanged until approved.", "success")
+        flash(
+            "Adjustment request submitted for accountant verification. Stock remains unchanged until final admin approval.",
+            "success",
+        )
         return redirect(url_for("staff.fuel_levels_dashboard"))
 
-    today = datetime.now(UTC).strftime("%Y-%m-%d")
+    today = now_cat().strftime("%Y-%m-%d")
     return render_template(
         "manager/fuel_adjustment_request_new.html",
         user=user,
@@ -73,6 +76,74 @@ def manager_fuel_adjustment_request_new():
         levels=snapshot,
         today=today,
     )
+
+
+@staff_bp.route("/accountant/fuel-adjustment-requests", methods=["GET"])
+@staff_login_required
+@require_permissions(Permission.ACCOUNTANT_PORTAL)
+def accountant_fuel_adjustment_requests():
+    user = user_model.get_user_by_id(int(session["user_id"]))
+    rows = fuel_adjustment_request_model.list_pending_for_accountant()
+    return render_template(
+        "accountant/fuel_adjustment_requests.html",
+        user=user,
+        role=session.get("role"),
+        requests=rows,
+        nav="fuel-adjustments",
+    )
+
+
+@staff_bp.route("/accountant/fuel-adjustment-requests/<int:request_id>", methods=["GET"])
+@staff_login_required
+@require_permissions(Permission.ACCOUNTANT_PORTAL)
+def accountant_fuel_adjustment_request_detail(request_id: int):
+    user = user_model.get_user_by_id(int(session["user_id"]))
+    row = fuel_adjustment_request_model.get_request(request_id)
+    if not row:
+        flash("Request not found.", "error")
+        return redirect(url_for("staff.accountant_fuel_adjustment_requests"))
+    if (row["status"] or "").upper() != fuel_adjustment_request_model.STATUS_PENDING_ACCOUNTANT_REVIEW:
+        flash("This request is no longer pending accountant review.", "error")
+        return redirect(url_for("staff.accountant_fuel_adjustment_requests"))
+    return render_template(
+        "accountant/fuel_adjustment_request_detail.html",
+        user=user,
+        role=session.get("role"),
+        req=row,
+        nav="fuel-adjustments",
+    )
+
+
+@staff_bp.post("/accountant/fuel-adjustment-requests/<int:request_id>/approve")
+@staff_login_required
+@require_permissions(Permission.ACCOUNTANT_PORTAL)
+def accountant_fuel_adjustment_request_approve(request_id: int):
+    comments = (request.form.get("accountant_comments") or "").strip()
+    ok, err = fuel_adjustment_request_model.accountant_approve_request(
+        request_id=request_id,
+        accountant_id=int(session["user_id"]),
+        accountant_comments=comments,
+    )
+    if not ok:
+        flash(err or "Could not verify request.", "error")
+        return redirect(url_for("staff.accountant_fuel_adjustment_request_detail", request_id=request_id))
+
+    log_event(
+        f"Fuel adjustment request accountant-approved request_id={request_id} accountant_id={session['user_id']}"
+    )
+    audit_service.record(
+        "fuel_adjustment_request_accountant_approved",
+        user_id=int(session["user_id"]),
+        username=session.get("username"),
+        details=f"request_id={request_id}",
+    )
+    _adjustment_alert(
+        alert_type="fuel_adjustment_pending_admin",
+        message=f"Fuel adjustment request #{request_id} verified by accountant and awaits admin approval.",
+        meta={"request_id": request_id},
+    )
+    flash("Request verified and forwarded to admin for final approval.", "success")
+    return redirect(url_for("staff.accountant_fuel_adjustment_requests"))
 
 
 @admin_bp.route("/fuel-adjustment-requests", methods=["GET"])
@@ -99,8 +170,8 @@ def admin_fuel_adjustment_request_detail(request_id: int):
     if not row:
         flash("Request not found.", "error")
         return redirect(url_for("admin.admin_fuel_adjustment_requests"))
-    if (row["status"] or "").upper() != STATUS_PENDING_VERIFICATION:
-        flash("This request is no longer pending.", "error")
+    if (row["status"] or "").upper() != fuel_adjustment_request_model.STATUS_PENDING_ADMIN_APPROVAL:
+        flash("This request is not ready for final admin approval.", "error")
         return redirect(url_for("admin.admin_fuel_adjustment_requests"))
     return render_template(
         "admin/fuel_adjustment_request_detail.html",
@@ -139,7 +210,7 @@ def admin_fuel_adjustment_request_approve(request_id: int):
     mgr = row["requested_by_username"] if row else "manager"
     _adjustment_alert(
         alert_type="fuel_adjustment_decision",
-        message=f"Fuel adjustment request #{request_id} APPROVED. Applied to stock. Manager: {mgr}.",
+        message=f"Fuel adjustment request #{request_id} FINAL-APPROVED. Applied to stock. Manager: {mgr}.",
         meta={"request_id": request_id},
     )
     flash("Request approved and fuel level updated.", "success")

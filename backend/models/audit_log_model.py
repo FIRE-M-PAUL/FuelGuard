@@ -10,6 +10,7 @@ import sqlite3
 from typing import Any
 
 from backend.models.user_model import get_db
+from backend.utils.timezone import now_cat_str
 
 
 def init_db() -> None:
@@ -44,10 +45,10 @@ def insert_entry(
     db = get_db()
     cur = db.execute(
         """
-        INSERT INTO audit_logs (user_id, username, action, details, ip_address)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO audit_logs (user_id, username, action, details, ip_address, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
-        (user_id, username, action, details, ip_address),
+        (user_id, username, action, details, ip_address, now_cat_str()),
     )
     db.commit()
     return int(cur.lastrowid)

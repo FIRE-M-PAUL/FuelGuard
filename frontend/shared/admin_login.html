@@ -26,6 +26,18 @@
             {% endif %}
             {% endwith %}
 
+            {% if already_logged_in %}
+            <article class="panel" style="margin-bottom:1rem;text-align:left;">
+                <p class="muted" style="margin-top:0;">You are already signed in as admin
+                    <strong>{{ session_username }}</strong>.</p>
+                <p class="muted" style="margin-bottom:0.75rem;">All tabs on this site share the same admin session
+                    cookie. Use a private window if you need a second admin session.</p>
+                {% if continue_url %}
+                <a class="btn btn-primary" href="{{ continue_url }}">Open dashboard</a>
+                {% endif %}
+            </article>
+            {% endif %}
+
             <form method="post" action="{{ url_for('admin.login') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="field">

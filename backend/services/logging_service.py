@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 from pathlib import Path
 
 from flask import current_app
+from backend.utils.timezone import CAT_ZONE
 
 
 def _log_path() -> Path:
@@ -18,6 +20,16 @@ def _log_path() -> Path:
     return base / "system.log"
 
 
+class _CatFormatter(logging.Formatter):
+    """Force log timestamps to Africa/Lusaka (CAT)."""
+
+    def formatTime(self, record, datefmt=None):  # noqa: N802
+        dt = datetime.fromtimestamp(record.created, CAT_ZONE)
+        if datefmt:
+            return dt.strftime(datefmt)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_system_logger() -> logging.Logger:
     logger = logging.getLogger("fuelguard.system")
     if logger.handlers:
@@ -25,9 +37,7 @@ def get_system_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     path = _log_path()
     fh = logging.FileHandler(path, encoding="utf-8")
-    fh.setFormatter(
-        logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
-    )
+    fh.setFormatter(_CatFormatter("%(asctime)s | %(levelname)s | %(message)s"))
     logger.addHandler(fh)
     logger.propagate = False
     return logger

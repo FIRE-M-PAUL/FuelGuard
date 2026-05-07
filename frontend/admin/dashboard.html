@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,13 +20,13 @@
                 </div>
             </div>
             <nav class="side-links">
-                <a class="active" href="{{ url_for('admin.dashboard') }}">User Directory</a>
-                <a href="{{ url_for('admin.register_user') }}">Create Accounts</a>
-                <a href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
-                <a href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
-                <a href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
-                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-                <a href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
+                <a class="sidebar-btn active" href="{{ url_for('admin.dashboard') }}">User Directory</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.register_user') }}">Create Accounts</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.retail_prices') }}">Retail prices</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.admin_audit_logs_db') }}">Audit log (DB)</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.admin_fuel_adjustment_requests') }}">Fuel adjustments</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                <a class="sidebar-btn" href="{{ url_for('admin.view_logs') }}">Activity Logs</a>
             </nav>
             <div class="side-meta">Signed in as {{ username }}</div>
         </aside>
@@ -78,8 +78,8 @@
         {% endwith %}
 
         <div class="panel" style="margin-bottom:14px;">
-            <h2>Fuel level adjustment requests (pending verification)</h2>
-            <p class="muted" style="margin-top:0;">Manager-submitted corrections. Approve to apply the requested reading to stock.</p>
+            <h2>Fuel level adjustment requests (pending final approval)</h2>
+            <p class="muted" style="margin-top:0;">Accountant-verified corrections waiting for final admin approval and stock update.</p>
             {% if fuel_adj_pending > 0 %}
             <div class="table-wrap">
                 <table>

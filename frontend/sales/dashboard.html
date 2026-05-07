@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,12 +18,12 @@
                 <div><div class="side-meta">Sales Operations</div></div>
             </div>
             <nav class="side-links">
-                <a class="active" href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
-                <a href="{{ url_for('staff.sales_history') }}">Sales History</a>
-                <a href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
-                <a href="{{ url_for('staff.sales_shifts') }}">Shifts</a>
-                <a href="{{ url_for('staff.sales_dashboard') }}#records">Recent Records</a>
+                <a class="sidebar-btn active" href="{{ url_for('staff.sales_dashboard') }}">Dashboard</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sell_fuel') }}">Sell Fuel</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sales_history') }}">Sales History</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.fuel_levels_dashboard') }}">Fuel Levels</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sales_shifts') }}">Shifts</a>
+                <a class="sidebar-btn" href="{{ url_for('staff.sales_dashboard') }}#records">Recent Records</a>
             </nav>
             <div class="side-meta">{{ user['email'] or '—' }}</div>
         </aside>

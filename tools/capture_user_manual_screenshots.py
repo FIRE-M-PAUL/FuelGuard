@@ -92,12 +92,10 @@ def capture_flow() -> None:
         page.goto(f"{BASE_URL}/login", wait_until="networkidle")
         save_shot(page, "login_page.png")
 
-        # 2) Login as manager (dashboard/inventory/reports)
+        # 2) Login as manager (dashboard/reports)
         login_staff(page, manager_username, "manager")
         page.goto(f"{BASE_URL}/manager/dashboard", wait_until="networkidle")
         save_shot(page, "dashboard_page.png")
-        page.goto(f"{BASE_URL}/manager/stock", wait_until="networkidle")
-        save_shot(page, "inventory_page.png")
         page.goto(f"{BASE_URL}/manager/reports", wait_until="networkidle")
         save_shot(page, "reports_page.png")
 
